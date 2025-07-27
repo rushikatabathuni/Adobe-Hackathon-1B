@@ -1,0 +1,85 @@
+{
+  "metadata": {
+    "input_documents": [
+      "Breakfast Ideas.pdf",
+      "Dinner Ideas - Mains_1.pdf",
+      "Dinner Ideas - Mains_2.pdf",
+      "Dinner Ideas - Mains_3.pdf",
+      "Dinner Ideas - Sides_1.pdf",
+      "Dinner Ideas - Sides_2.pdf",
+      "Dinner Ideas - Sides_3.pdf",
+      "Dinner Ideas - Sides_4.pdf",
+      "Lunch Ideas.pdf"
+    ],
+    "persona": "Food Contractor",
+    "job_to_be_done": "Prepare a vegetarian buffet-style dinner menu for a corporate gathering, including gluten-free items.",
+    "processing_timestamp": "2025-07-27T12:24:49.003484"
+  },
+  "extracted_sections": [
+    {
+      "document": "Lunch Ideas.pdf",
+      "section_title": "Black Bean and Corn Salad",
+      "importance_rank": 1,
+      "page_number": 7
+    },
+    {
+      "document": "Lunch Ideas.pdf",
+      "section_title": "BBQ Chicken Wrap",
+      "importance_rank": 2,
+      "page_number": 12
+    },
+    {
+      "document": "Dinner Ideas - Mains_3.pdf",
+      "section_title": "Honey Garlic Pork Ribs",
+      "importance_rank": 3,
+      "page_number": 6
+    },
+    {
+      "document": "Dinner Ideas - Sides_4.pdf",
+      "section_title": "Som Tum (Green Papaya Salad)",
+      "importance_rank": 4,
+      "page_number": 15
+    },
+    {
+      "document": "Dinner Ideas - Sides_4.pdf",
+      "section_title": "Rotkohl (Braised Red Cabbage)",
+      "importance_rank": 5,
+      "page_number": 10
+    }
+  ],
+  "subsection_analysis": [
+    {
+      "document": "Lunch Ideas.pdf",
+      "refined_text": "Season with salt and pepper, then toss to combine. Black Bean and Corn Salad Ingredients: 1 can black beans, drained and rinsed 1 cup corn kernels (fresh or canned) 1/2 cup cherry tomatoes, halved 1/4 cup red onion, finely chopped 1/4 cup cilantro, chopped 2 tablespoons olive oil 1 tablespoon...",
+      "page_number": 7
+    },
+    {
+      "document": "Lunch Ideas.pdf",
+      "refined_text": "BBQ Chicken Wrap Ingredients: 1 whole wheat tortilla 1 cup cooked chicken breast, shredded 2 tablespoons BBQ sauce 1/4 cup shredded cheese 1/4 cup coleslaw mix Instructions: Lay the tortilla flat and spread the BBQ sauce evenly. Add the chicken, cheese, and coleslaw mix. Roll up the tortilla tightly and...",
+      "page_number": 12
+    },
+    {
+      "document": "Dinner Ideas - Mains_3.pdf",
+      "refined_text": "Serve warm. Honey Garlic Pork Ribs Ingredients: 2 pounds pork ribs 1/4 cup honey 1/4 cup soy sauce 2 tablespoons rice vinegar 3 cloves garlic, minced 1 teaspoon grated ginger 1 teaspoon paprika Salt and pepper to taste Sliced green onions for garnish Instructions: Preheat oven to 300F (150C). Season...",
+      "page_number": 6
+    },
+    {
+      "document": "Dinner Ideas - Sides_4.pdf",
+      "refined_text": "o Serve as a dip or side dish. Som Tum (Green Papaya Salad) Ingredients: o 1 green papaya o 2 tomatoes o 1 carrot o 2 cloves garlic o 2 tablespoons fish sauce o 2 tablespoons lime juice o 1 tablespoon sugar o 1 tablespoon peanuts o 1-2 Thai chilies...",
+      "page_number": 15
+    },
+    {
+      "document": "Dinner Ideas - Sides_4.pdf",
+      "refined_text": "o Drain on paper towels and serve warm. Rotkohl (Braised Red Cabbage) Ingredients: o 1 head red cabbage o 1 small onion o 1 apple o 1/4 cup vinegar o 1/4 cup sugar o 1/4 cup water o 1 teaspoon salt o 1/2 teaspoon pepper Instructions: o Shred cabbage and...",
+      "page_number": 10
+    }
+  ],
+  "quality_metrics": {
+    "total_sections_extracted": 20,
+    "documents_processed_successfully": 9,
+    "total_documents": 9,
+    "top_sections_selected": 5,
+    "refined_paragraphs_extracted": 5,
+    "order_continuity_verified": true
+  }
+}
