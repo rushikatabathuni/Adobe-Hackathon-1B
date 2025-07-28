@@ -114,15 +114,17 @@ python main.py
 `docker build -t adobe-pdf-analyzer .`
 
 # Prepare the following directory structure on your host machine:
-# input/
-# ├── input.json       # Your input configuration file
-# └── pdf/             # PDF files referenced in input.json
-#
-# output/
-# (empty folder for generated results)
+```bash
+ input/
+  ├── input.json       # Your input configuration file
+  └── pdf/             # PDF files referenced in input.json
+
+  output/
+  (empty folder for generated results)`
 
 # Run the Docker container with volumes mounted for input and output
-`docker run -v "$(pwd)/input:/app/input" -v "$(pwd)/output:/app/output" adobe-pdf-analyzer`
+`docker run -v "$(pwd)/input:/app/input" -v "$(pwd)/output:/app/output" adobe-pdf-analyzer
+```
 
 
 The system will:
