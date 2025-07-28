@@ -8,8 +8,8 @@ from utils.section_extraction import extract_sections_from_outline
 from utils.relevance_ranking import rank_sections, extract_top_paragraphs # Assuming these are the updated ones
 from utils.formatter import format_output
 
-bi_encoder_model = SentenceTransformer("paraphrase_minilm_l12/")
-cross_encoder_model = CrossEncoder("cross-encoder-ms-marco-MiniLM-L-12-v2/")
+bi_encoder_model = SentenceTransformer("paraphrase-MiniLM-L12-v2")
+cross_encoder_model = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-12-v2")
 
 INPUT_DIR = "/app/input"
 OUTPUT_DIR = "/app/output"
