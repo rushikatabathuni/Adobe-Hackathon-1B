@@ -2,7 +2,7 @@
 
 A AI-powered system that extracts, ranks, and analyzes relevant content from PDF documents based on specific persona roles and job tasks. Built with advanced NLP techniques using semantic similarity and cross-encoder models, meeting all requirements
 
-## 🚀 Features
+##  Features
 
 - **Intelligent PDF Processing**: Extracts structured sections from PDFs using outline information
 - **Semantic Content Ranking**: Uses bi-encoder and cross-encoder models for accurate relevance scoring
@@ -11,7 +11,7 @@ A AI-powered system that extracts, ranks, and analyzes relevant content from PDF
 - **Quality Assessment**: Evaluates content quality based on multiple factors including length, structure, and position
 - **Concurrent Processing**: Multi-threaded PDF processing for improved performance
 
-## 🏗️ Architecture
+## 🏗 Architecture
 
 The system consists of several key components:
 
@@ -21,7 +21,7 @@ The system consists of several key components:
 - **Output Formatting** (`formatter.py`): Structures the final JSON output
 - **Main Pipeline** (`main.py`): Orchestrates the entire processing workflow
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 project/
@@ -103,7 +103,7 @@ Create an `input.json` file with the following structure:
 - **persona.role**: The role/persona for content analysis
 - **job_to_be_done.task**: Specific task description with optional inclusion/exclusion constraints
 
-## 🚀 Usage
+##  Usage
 
 Run the main processing pipeline:
 
@@ -119,7 +119,7 @@ The system will:
 5. Extract refined paragraphs from top sections
 6. Generate the final output JSON
 
-## 📊 Output Format
+##  Output Format
 
 The system generates an `output.json` file in the `output/` directory with:
 
@@ -149,7 +149,7 @@ The system generates an `output.json` file in the `output/` directory with:
 }
 ```
 
-## 🔄 Code Workflow
+##  Code Workflow
 
 ### 1. Input Validation & Loading (`main.py`)
 ```
@@ -224,12 +224,6 @@ format_output():
 └── JSON Export → Final structured output to output/output.json
 ```
 
-### 7. Quality Assurance & Validation
-Throughout the pipeline:
-- **Content Validation**: Ensures minimum content thresholds
-- **Order Verification**: Maintains document-section-paragraph continuity
-- **Error Handling**: Graceful degradation with fallback mechanisms
-- **Progress Tracking**: Detailed logging of each processing stage
 
 ### Processing Flow Summary:
 ```
@@ -243,14 +237,6 @@ Content Extraction → Output Generation → output.json
 - **Constraint Matching**: Pattern-based inclusion/exclusion detection
 - **Quality Scoring**: Multi-factor content assessment
 
-##  Configuration Options
-
-Key parameters can be adjusted in the code:
-
-- `top_n`: Number of top sections to extract (default: 5)
-- `max_words`: Maximum words in refined snippets (default: 60)
-- `batch_size`: Processing batch size (default: 32)
-- `max_workers`: Concurrent processing threads (default: 8)
 
 
 ### Error Messages
@@ -259,7 +245,7 @@ Key parameters can be adjusted in the code:
 - `"PDF file not found"`: Check PDF files are in `input/pdf/`
 - `"No sections extracted"`: PDF may be image-based or corrupted
 
-## 📈 Model Information
+##  Model Information
 
 - **Bi-encoder**: `paraphrase_minilm_l12/` - Fast semantic similarity
 - **Cross-encoder**: `cross-encoder-ms-marco-MiniLM-L-12-v2/` - Accurate relevance ranking
