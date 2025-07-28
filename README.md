@@ -121,10 +121,11 @@ python main.py
 
   output/
   (empty folder for generated results)`
-
-# Run the Docker container with volumes mounted for input and output
-`docker run -v "$(pwd)/input:/app/input" -v "$(pwd)/output:/app/output" adobe-pdf-analyzer
 ```
+# Run the Docker container with volumes mounted for input and output
+
+`docker run -v "$(pwd)/input:/app/input" -v "$(pwd)/output:/app/output" adobe-pdf-analyzer`
+
 
 
 The system will:
