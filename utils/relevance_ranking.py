@@ -44,7 +44,7 @@ def extract_key_concepts_and_constraints(job_task: str, model, batch_size: int =
     # Filter and score concepts
     scored_concepts = []
     for concept in potential_concepts:
-        words = concept.split()\
+        words = concept.split()
         if len(words) < 2 or all(word in common_words for word in words):
             continue
         score = len(words) * 0.5
