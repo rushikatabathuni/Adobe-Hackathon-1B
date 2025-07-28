@@ -1,14 +1,11 @@
 from collections import Counter
 import torch
-from sentence_transformers import util, SentenceTransformer
+from sentence_transformers import util
 import re
 import unicodedata
-import math
 import numpy as np
-import os # Import os for path joining
+from typing import List, Dict, Any
 
-
-# --- Utility Functions ---
 
 def clean_text(text):
     """Clean and normalize text."""
@@ -19,555 +16,564 @@ def clean_text(text):
     text = text.encode("ascii", "ignore").decode("ascii")
     return text
 
-def extract_requirements_and_constraints(job_task, model, batch_size=32):
-    """
-    Extract explicit requirements and constraints from the task using a hybrid approach
-    of rule-based pattern matching and semantic analysis (embeddings).
-    This helps the model focus on critical aspects of the task.
-    """
-    task_lower = clean_text(job_task).lower()
-    
-    # Define common positive and negative indicators for rule-based extraction
-    positive_indicators = ["include", "for", "with", "contains", "featuring", "must have", "should have", "about", "related to", "such as"]
-    negative_indicators = ["exclude", "without", "not including", "avoid", "no", "not", "except"]
-    
-    extracted_positive_terms = []
-    extracted_negative_terms = []
-    
-    # Simple rule-based extraction for explicit constraints
-    # This regex attempts to capture phrases after indicators until another indicator, punctuation, or end of string.
-    indicator_pattern = "|".join(re.escape(i) for i in (positive_indicators + negative_indicators))
-    
-    for indicator in positive_indicators:
-        # Pattern: indicator + whitespace + (capture group for terms) + (non-capturing group for delimiters/next indicator)
-        matches = re.findall(rf'{re.escape(indicator)}\s+([a-zA-Z0-9\s,\-]+?)(?=\s*(?:{indicator_pattern}|[.,;?!]|\Z))', task_lower, re.IGNORECASE)
-        for m in matches:
-            terms = [t.strip() for t in m.split(',') if t.strip()]
-            extracted_positive_terms.extend(terms)
-    
-    for indicator in negative_indicators:
-        matches = re.findall(rf'{re.escape(indicator)}\s+([a-zA-Z0-9\s,\-]+?)(?=\s*(?:{indicator_pattern}|[.,;?!]|\Z))', task_lower, re.IGNORECASE)
-        for m in matches:
-            terms = [t.strip() for t in m.split(',') if t.strip()]
-            extracted_negative_terms.extend(terms)
 
-    # General keywords from the task (useful even if no explicit indicators)
-    words = re.findall(r'\b[a-zA-Z]{3,}\b', task_lower)
-    key_words = [w for w in words if len(w) >= 4]
+def extract_key_concepts_and_constraints(job_task: str, model, batch_size: int = 32) -> Dict[str, Any]:
+    """
+    Extract key concepts and constraints from task using improved NLP techniques.
     
-    # Clean and deduplicate extracted terms
-    extracted_positive_terms = list(set([clean_text(t) for t in extracted_positive_terms if t]))
-    extracted_negative_terms = list(set([clean_text(t) for t in extracted_negative_terms if t]))
-    key_words = list(set([clean_text(w) for w in key_words if w]))
-
-    # Combine all terms to get embeddings efficiently
-    all_relevant_phrases = list(set(extracted_positive_terms + extracted_negative_terms + key_words))
+    This approach focuses on:
+    1. Extracting noun phrases as key concepts
+    2. Identifying constraint patterns (inclusion/exclusion)
+    3. Using semantic similarity for better understanding
+    """
+    task_clean = clean_text(job_task).lower()
+    
+    # Extract meaningful noun phrases (2-4 words) as potential key concepts
+    # This captures compound concepts like "luxury hotels", "outdoor activities", etc.
+    noun_phrase_pattern = r'\b(?:[a-z]+(?:\s+[a-z]+){1,3})\b'
+    potential_concepts = re.findall(noun_phrase_pattern, task_clean)
+    
+    # Filter out very common words and short phrases
+    common_words = {
+        'and', 'or', 'the', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been', 'being',
+        'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should',
+        'may', 'might', 'can', 'must', 'shall', 'to', 'of', 'in', 'on', 'at', 'by',
+        'for', 'with', 'as', 'from', 'up', 'about', 'into', 'through', 'during',
+        'before', 'after', 'above', 'below', 'between', 'among', 'this', 'that',
+        'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we', 'they', 'me', 'him',
+        'her', 'us', 'them', 'my', 'your', 'his', 'her', 'its', 'our', 'their'
+    }
+    
+    # Filter and score concepts
+    scored_concepts = []
+    for concept in potential_concepts:
+        words = concept.split()
+        # Skip if contains only common words or is too short
+        if len(words) < 2 or all(word in common_words for word in words):
+            continue
+        
+        # Score based on length and position in task
+        score = len(words) * 0.5  # Longer phrases are more specific
+        if task_clean.index(concept) < len(task_clean) * 0.3:  # Early in task = more important
+            score += 1.0
+        
+        scored_concepts.append((concept, score))
+    
+    # Sort by score and take top concepts
+    scored_concepts.sort(key=lambda x: x[1], reverse=True)
+    key_concepts = [concept for concept, _ in scored_concepts[:10]]  # Top 10 concepts
+    
+    # Extract inclusion/exclusion constraints using improved patterns
+    inclusion_terms = []
+    exclusion_terms = []
+    
+    # Inclusion patterns
+    inclusion_patterns = [
+        r'(?:including?|with|featuring|contains?|such as|especially|specifically)\s+([^.,;!?]+)',
+        r'(?:focus on|looking for|interested in|need|want|require)\s+([^.,;!?]+)',
+        r'(?:must have|should have|has to have)\s+([^.,;!?]+)'
+    ]
+    
+    # Exclusion patterns  
+    exclusion_patterns = [
+        r'(?:excluding?|without|not including|avoid|no|not)\s+([^.,;!?]+)',
+        r'(?:except|but not|other than)\s+([^.,;!?]+)',
+        r'(?:don\'t want|do not want|cannot have)\s+([^.,;!?]+)'
+    ]
+    
+    for pattern in inclusion_patterns:
+        matches = re.findall(pattern, task_clean)
+        for match in matches:
+            # Clean and split the match
+            terms = [term.strip() for term in re.split(r'[,;]', match) if term.strip()]
+            inclusion_terms.extend(terms)
+    
+    for pattern in exclusion_patterns:
+        matches = re.findall(pattern, task_clean)
+        for match in matches:
+            # Clean and split the match
+            terms = [term.strip() for term in re.split(r'[,;]', match) if term.strip()]
+            exclusion_terms.extend(terms)
+    
+    # Remove duplicates and clean
+    key_concepts = list(set([clean_text(c) for c in key_concepts if c]))
+    inclusion_terms = list(set([clean_text(t) for t in inclusion_terms if t]))
+    exclusion_terms = list(set([clean_text(t) for t in exclusion_terms if t]))
+    
+    # Generate embeddings for all terms
+    all_terms = key_concepts + inclusion_terms + exclusion_terms
+    term_embeddings = {}
+    task_embedding = None
     
     try:
         with torch.no_grad():
+            if all_terms:
+                embeddings = model.encode(all_terms, convert_to_tensor=True, batch_size=batch_size)
+                for i, term in enumerate(all_terms):
+                    term_embeddings[term] = embeddings[i]
+            
             task_embedding = model.encode(job_task, convert_to_tensor=True)
-            
-            term_embeddings = {}
-            if all_relevant_phrases:
-                # Batch encode all relevant phrases
-                encoded_phrases = model.encode(all_relevant_phrases, convert_to_tensor=True, batch_size=batch_size)
-                for i, phrase in enumerate(all_relevant_phrases):
-                    term_embeddings[phrase] = encoded_phrases[i]
-
-        return {
-            'task_embedding': task_embedding,
-            'positive_terms': extracted_positive_terms,
-            'negative_terms': extracted_negative_terms,
-            'key_words': key_words, # General keywords
-            'term_embeddings': term_embeddings, # Embeddings for individual terms
-            'full_task': job_task
-        }
+    
     except Exception as e:
-        print(f"Warning: Error in extracting task embeddings/terms: {e}. Falling back to basic keywords.")
-        return {
-            'task_embedding': None,
-            'positive_terms': [],
-            'negative_terms': [],
-            'key_words': key_words,
-            'term_embeddings': {},
-            'full_task': job_task
-        }
+        print(f"Warning: Error generating embeddings: {e}")
+        task_embedding = None
+        term_embeddings = {}
+    
+    return {
+        'task_embedding': task_embedding,
+        'key_concepts': key_concepts,
+        'inclusion_terms': inclusion_terms,
+        'exclusion_terms': exclusion_terms,
+        'term_embeddings': term_embeddings,
+        'full_task': job_task
+    }
 
-def calculate_semantic_alignment(section, task_requirements, model, batch_size=32):
+
+def calculate_semantic_alignment(section_text: str, task_requirements: Dict, bi_encoder_model, batch_size: int = 32) -> float:
     """
-    Calculate how well a section aligns with task requirements using semantic similarity
-    and phrase-level matching.
+    Calculate how well a section aligns with the task requirements using semantic similarity.
     """
-    title = clean_text(section.get("section_title", ""))
-    content = clean_text(section.get("content", ""))
-    
-    if not title and not content:
+    if not section_text or not task_requirements.get('task_embedding') is not None:
         return 0.0
-    
-    # Combine title and content, with emphasis on title (repeat title)
-    # Truncate content for embedding efficiency (MiniLM benefits from less noise)
-    section_text = f"{title}. {title}. {content[:750]}" # Increased content slightly
     
     try:
         with torch.no_grad():
-            section_embedding = model.encode(section_text, convert_to_tensor=True)
-            task_embedding = task_requirements.get('task_embedding')
+            section_embedding = bi_encoder_model.encode(section_text, convert_to_tensor=True, batch_size=batch_size)
             
-            if task_embedding is not None:
-                # Primary semantic similarity
-                semantic_score = util.cos_sim(task_embedding, section_embedding).item()
+            # Base similarity to the full task
+            base_similarity = util.cos_sim(task_requirements['task_embedding'], section_embedding).item()
+            
+            # Boost for key concepts
+            concept_boost = 0.0
+            key_concepts = task_requirements.get('key_concepts', [])
+            if key_concepts:
+                concept_similarities = []
+                for concept in key_concepts:
+                    if concept in task_requirements['term_embeddings']:
+                        concept_emb = task_requirements['term_embeddings'][concept]
+                        sim = util.cos_sim(concept_emb, section_embedding).item()
+                        concept_similarities.append(sim)
                 
-                # Phrase-level matching for more precise alignment using positive terms
-                positive_terms = task_requirements.get('positive_terms', [])
-                phrase_scores = []
+                if concept_similarities:
+                    # Use max similarity to any key concept
+                    concept_boost = max(concept_similarities) * 0.3
+            
+            # Boost for inclusion terms
+            inclusion_boost = 0.0
+            inclusion_terms = task_requirements.get('inclusion_terms', [])
+            if inclusion_terms:
+                inclusion_similarities = []
+                for term in inclusion_terms:
+                    if term in task_requirements['term_embeddings']:
+                        term_emb = task_requirements['term_embeddings'][term]
+                        sim = util.cos_sim(term_emb, section_embedding).item()
+                        inclusion_similarities.append(sim)
                 
-                if positive_terms:
-                    # Get embeddings for positive terms from pre-computed map
-                    positive_term_embeddings = [task_requirements['term_embeddings'][p] for p in positive_terms if p in task_requirements['term_embeddings']]
-                    
-                    if positive_term_embeddings:
-                        # Calculate similarity of each positive term to the section
-                        # Using model.encode on a list of tensors should be efficient
-                        term_sims = util.cos_sim(torch.stack(positive_term_embeddings), section_embedding).flatten().tolist()
-                        phrase_scores.extend(term_sims)
-                        
-                        if phrase_scores:
-                            # Average of top N phrase scores for a more robust signal
-                            phrase_scores.sort(reverse=True)
-                            # Consider top 2-3 most relevant phrases
-                            avg_top_phrases_score = np.mean(phrase_scores[:min(len(phrase_scores), 3)])
-                            
-                            # Combine semantic and phrase scores (tunable weights)
-                            combined_score = (semantic_score * 0.7) + (avg_top_phrases_score * 0.3)
-                        else:
-                            combined_score = semantic_score
-                    else: # No embeddings for positive terms
-                        combined_score = semantic_score
-                else: # No positive terms extracted
-                    combined_score = semantic_score
-                
-                return combined_score
-            else:
-                # Fallback to keyword matching if task embedding failed
-                return calculate_keyword_overlap(section_text, task_requirements)
-                
-    except Exception as e:
-        print(f"Error calculating semantic alignment: {e}. Falling back to keyword overlap.")
-        # Fallback to keyword matching if embedding failed for section
-        return calculate_keyword_overlap(section_text, task_requirements)
-
-def calculate_keyword_overlap(section_text, task_requirements):
-    """
-    Fallback method using keyword overlap when embeddings are not available or fail.
-    """
-    section_words = set(re.findall(r'\b[a-zA-Z]{3,}\b', section_text.lower()))
-    task_words = set(task_requirements.get('key_words', []))
+                if inclusion_similarities:
+                    inclusion_boost = max(inclusion_similarities) * 0.2
+            
+            return min(1.0, base_similarity + concept_boost + inclusion_boost)
     
-    if not task_words:
+    except Exception as e:
+        print(f"Warning: Error calculating semantic alignment: {e}")
         return 0.0
-    
-    overlap = len(section_words.intersection(task_words))
-    # Normalize by the number of task words to get a ratio
-    overlap_ratio = overlap / len(task_words)
-    
-    # Cap the fallback score to prevent it from outcompeting semantic scores
-    return min(0.8, overlap_ratio)
 
-def detect_semantic_contradictions(section, task_requirements, model, batch_size=32):
+
+def detect_exclusion_violations(section_text: str, task_requirements: Dict, bi_encoder_model, batch_size: int = 32) -> bool:
     """
-    Detect if a section semantically contradicts the task requirements.
-    This uses a combination of explicit negative term matching and semantic dissimilarity.
+    Detect if a section violates exclusion constraints.
     """
-    title = clean_text(section.get("section_title", ""))
-    content = clean_text(section.get("content", ""))
-    
-    section_text_lower = (title + " " + content).lower()
-    
-    # 1. Explicit String Matching for Negative Terms (Fast & Direct)
-    negative_terms = task_requirements.get('negative_terms', [])
-    if negative_terms:
-        for term in negative_terms:
-            if term and term in section_text_lower: # Check for direct presence of negative terms
-                # print(f"DEBUG: Detected explicit negative term '{term}' in section. Skipping.")
-                return True 
-
-    # 2. Semantic Contradiction Check (More Nuanced)
-    section_text_for_contradiction = f"{title}. {content[:500]}" # Use enough content for semantic signal
-    if not section_text_for_contradiction.strip():
-        return False # Nothing to contradict
-
-    try:
-        with torch.no_grad():
-            task_embedding = task_requirements.get('task_embedding')
-            if task_embedding is None:
-                return False # Cannot perform semantic check without task embedding
-            
-            section_embedding = model.encode(section_text_for_contradiction, convert_to_tensor=True, batch_size=batch_size)
-            
-            # Overall similarity to task (very low similarity suggests irrelevance, not necessarily contradiction)
-            task_similarity = util.cos_sim(task_embedding, section_embedding).item()
-            
-            # If the section is extremely irrelevant (very low similarity), we can filter it early.
-            # This is a soft filter, not a direct contradiction.
-            if task_similarity < 0.05: # Tunable threshold for extreme irrelevance
-                return True # Treat as effectively contradictory/unusable
-
-            # Check if the section is semantically similar to *negative* concepts
-            for neg_term in negative_terms:
-                neg_term_emb = task_requirements['term_embeddings'].get(neg_term)
-                if neg_term_emb is not None:
-                    # How similar is the section to this specific negative term?
-                    neg_sim_to_section = util.cos_sim(neg_term_emb, section_embedding).item()
-                    
-                    # If section is highly similar to a negative term (e.g., > 0.65)
-                    # AND its overall similarity to the *positive* task is relatively low (<0.4),
-                    # then it's likely a contradiction. Tunable thresholds are crucial here.
-                    if neg_sim_to_section > 0.65 and task_similarity < 0.4:
-                        # print(f"DEBUG: Detected semantic opposition for '{neg_term}' (sim: {neg_sim_to_section:.2f}, task_sim: {task_similarity:.2f}). Skipping.")
-                        return True
-            
-            return False
-            
-    except Exception as e:
-        print(f"Error in semantic contradiction detection: {e}. Defaulting to no contradiction.")
+    exclusion_terms = task_requirements.get('exclusion_terms', [])
+    if not exclusion_terms:
         return False
+    
+    section_lower = section_text.lower()
+    
+    # First check for direct string matches (fast)
+    for term in exclusion_terms:
+        if term.lower() in section_lower:
+            return True
+    
+    # Then check semantic violations
+    try:
+        with torch.no_grad():
+            section_embedding = bi_encoder_model.encode(section_text, convert_to_tensor=True, batch_size=batch_size)
+            
+            for term in exclusion_terms:
+                if term in task_requirements['term_embeddings']:
+                    term_emb = task_requirements['term_embeddings'][term]
+                    similarity = util.cos_sim(term_emb, section_embedding).item()
+                    
+                    # If section is highly similar to an exclusion term, it violates constraints
+                    if similarity > 0.7:
+                        return True
+    
+    except Exception as e:
+        print(f"Warning: Error in exclusion detection: {e}")
+    
+    return False
 
-def filter_and_deduplicate_sections(sections):
+
+def extract_quality_features(section: Dict[str, Any]) -> Dict[str, float]:
     """
-    Remove duplicate and near-duplicate sections based on content similarity and normalized titles.
+    Extract quality features from a section for scoring.
+    """
+    title = clean_text(section.get("section_title", ""))
+    content = clean_text(section.get("content", ""))
+    
+    features = {}
+    
+    # Content length features
+    content_words = len(content.split()) if content else 0
+    features['content_length'] = min(1.0, content_words / 200)  # Normalize to 200 words
+    
+    # Title quality features
+    title_words = len(title.split()) if title else 0
+    features['title_quality'] = 1.0 if 2 <= title_words <= 10 else 0.5
+    
+    # Structural features
+    features['has_structured_content'] = 1.0 if content and ('\n' in content or '.' in content) else 0.0
+    
+    # Position features (earlier pages might be more important)
+    page_num = section.get("page_number", 1)
+    features['position_score'] = max(0.0, (100 - page_num) / 100)
+    
+    return features
+
+
+def rank_sections(sections: List[Dict], persona_role: str, job_task: str, 
+                 bi_encoder_model, cross_encoder_model, top_n: int = 5, batch_size: int = 32) -> List[Dict]:
+    """
+    Improved ranking system with better task understanding and quality assessment.
     """
     if not sections:
         return []
     
-    filtered_sections = []
-    seen_content_hashes = set()
-    seen_titles_normalized = set()
+    print(f"🔍 Analyzing task for relevance ranking...")
+    
+    # Extract task requirements using improved method
+    task_requirements = extract_key_concepts_and_constraints(job_task, bi_encoder_model, batch_size)
+    
+    print(f"📋 Extracted {len(task_requirements['key_concepts'])} key concepts")
+    print(f"✅ Found {len(task_requirements['inclusion_terms'])} inclusion terms") 
+    print(f"❌ Found {len(task_requirements['exclusion_terms'])} exclusion terms")
+    
+    # Filter out sections that violate exclusion constraints
+    valid_sections = []
+    excluded_count = 0
     
     for section in sections:
         title = clean_text(section.get("section_title", ""))
         content = clean_text(section.get("content", ""))
+        section_text = f"{title}. {content[:800]}"  # Limit content for processing
         
-        # Create content hash for exact duplicate detection (using a snippet for speed)
-        content_hash = hash(f"{title}|{content[:200]}") # Only hash first 200 chars of content
-        
-        if content_hash in seen_content_hashes:
+        if detect_exclusion_violations(section_text, task_requirements, bi_encoder_model, batch_size):
+            excluded_count += 1
             continue
         
-        # Normalize title for near-duplicate detection (word-based Jaccard)
-        title_normalized_str = re.sub(r'[^a-zA-Z0-9\s]', '', title.lower()).strip()
-        
-        # Simple check for very similar titles after normalization (e.g., "Introduction" vs "introduction")
-        if title_normalized_str in seen_titles_normalized:
-            continue
-
-        # Jaccard similarity for more nuanced title similarity (e.g., "Executive Summary" vs "Summary for Executives")
-        is_near_duplicate_title = False
-        current_title_words = set(title_normalized_str.split())
-        
-        if current_title_words: # Only check if current title has words
-            for seen_title_norm_str in list(seen_titles_normalized): # Iterate over a copy
-                seen_title_words = set(seen_title_norm_str.split())
-                if seen_title_words:
-                    intersection = len(current_title_words.intersection(seen_title_words))
-                    union = len(current_title_words.union(seen_title_words))
-                    jaccard_sim = intersection / union if union > 0 else 0
-                    
-                    if jaccard_sim > 0.8:  # 80% similarity threshold for titles
-                        is_near_duplicate_title = True
-                        break
-        
-        if not is_near_duplicate_title:
-            seen_content_hashes.add(content_hash)
-            seen_titles_normalized.add(title_normalized_str)
-            filtered_sections.append(section)
+        valid_sections.append(section)
     
-    return filtered_sections
-
-def rank_sections(sections, persona_role, job_task, model,top_n=5, batch_size=32):
-    """
-    Redesigned ranking system focusing on semantic alignment and contradiction detection,
-    optimized for smaller models and general purpose use.
-    """
-    if not sections:
-        return []
-    
-    print(f"🔍 Analyzing task: {job_task[:100]}...")
-    
-    # Step 1: Extract task requirements and constraints (semantic signals for MiniLM)
-    task_requirements = extract_requirements_and_constraints(job_task, model, batch_size=batch_size)
-    
-    # Step 2: Filter duplicates early to reduce processing load
-    unique_sections = filter_and_deduplicate_sections(sections)
-    print(f"📝 Filtered to {len(unique_sections)} unique sections from {len(sections)} total")
-    
-    if not unique_sections:
-        return []
-    
-    # Step 3: Score sections and filter contradictions
-    valid_sections = []
-    contradiction_count = 0
-    
-    # Batch process sections for embedding and scoring
-    sections_to_embed = []
-    original_section_map = {} # Map index in sections_to_embed back to original section object
-
-    for i, section in enumerate(unique_sections):
-        title = clean_text(section.get("section_title", ""))
-        content = clean_text(section.get("content", ""))
-        section_text_for_embed = f"{title}. {title}. {content[:750]}" # Same text used for alignment
-        
-        if not section_text_for_embed.strip():
-            continue
-
-        # Perform contradiction check. If contradictory, skip early.
-        is_contradictory = detect_semantic_contradictions(section, task_requirements, model, batch_size=batch_size)
-        if is_contradictory:
-            contradiction_count += 1
-            continue
-
-        # If not contradictory, add to batch for alignment scoring
-        sections_to_embed.append(section_text_for_embed)
-        original_section_map[len(sections_to_embed) - 1] = section
-    
-    if not sections_to_embed:
-        print("⚠️  Warning: No sections passed initial filtering/contradiction check. Returning empty.")
-        return []
-
-    # Batch encode sections for alignment score calculation
-    try:
-        section_embeddings = model.encode(sections_to_embed, convert_to_tensor=True, batch_size=batch_size)
-    except Exception as e:
-        print(f"ERROR: Batch encoding sections failed: {e}. Falling back to individual encoding for remaining sections.")
-        section_embeddings = None # Indicate batch encoding failed
-    
-    for i, section_text in enumerate(sections_to_embed):
-        section = original_section_map[i]
-        
-        # Recalculate alignment score. If batch encoding failed, perform individual encoding.
-        if section_embeddings is not None:
-            # Use pre-computed embedding
-            section_embedding_for_alignment = section_embeddings[i]
-            # Call semantic alignment with pre-computed embedding
-            alignment_score = calculate_semantic_alignment_with_embedding(
-                section, task_requirements, model, section_embedding_for_alignment
-            )
-        else:
-            # Fallback if batch encoding failed - will re-encode individually in calculate_semantic_alignment
-            alignment_score = calculate_semantic_alignment(section, task_requirements, model, batch_size=batch_size)
-        
-        if alignment_score >= 0.05: # Keep sections with reasonable alignment
-            section["alignment_score"] = alignment_score
-            valid_sections.append(section)
-    
-    print(f"🚫 Filtered out {contradiction_count} contradictory sections")
-    print(f"✅ {len(valid_sections)} sections remain after contradiction filtering and alignment check.")
+    if excluded_count > 0:
+        print(f"🚫 Excluded {excluded_count} sections due to constraint violations")
     
     if not valid_sections:
-        print("⚠️  Warning: No sections passed alignment filtering. Attempting to return few sections with lowest possible score.")
-        # Fallback: if all sections are filtered, return a few low-scoring ones to prevent empty output
-        for section in unique_sections[:min(top_n, len(unique_sections))]:
-            section["alignment_score"] = 0.01 # Assign a minimal score
-            valid_sections.append(section)
-        # Ensure only unique sections are added in fallback, and avoid re-adding if already added above
-        valid_sections = list({id(sec): sec for sec in valid_sections}.values()) # Deduplicate by object ID
-
-    # Step 4: Enhance scores with quality indicators
+        print("⚠️ No valid sections after constraint filtering")
+        return []
+    
+    # Calculate comprehensive scores for valid sections
+    scored_sections = []
+    
     for section in valid_sections:
-        base_score = section.get("alignment_score", 0.0)
+        title = clean_text(section.get("section_title", ""))
+        content = clean_text(section.get("content", ""))
+        section_text = f"{title}. {content[:1000]}"
         
-        content = section.get("content", "")
-        title = section.get("section_title", "")
+        # Calculate semantic alignment score
+        alignment_score = calculate_semantic_alignment(section_text, task_requirements, bi_encoder_model, batch_size)
         
-        # Content depth (more substantial content gets slight bonus, log-scaled)
-        content_words = len(content.split()) if content else 0
-        depth_bonus = min(0.05, math.log1p(content_words) / 100) # Max bonus 0.05, scaled
-
-        # Title quality (descriptive titles get bonus based on length)
-        title_word_count = len(title.split())
-        title_bonus = 0.02 if title_word_count >= 3 else 0.0 # Small bonus for 3+ word titles
+        # Extract quality features
+        quality_features = extract_quality_features(section)
         
-        # Page position (slight preference for earlier pages, decaying. Max 50 pages influence)
-        page_num = section.get("page_number", 1)
-        page_bonus = max(0.0, (50 - page_num) / 1000) # Max bonus for page 1 = 0.049
-
-        final_score = base_score + depth_bonus + title_bonus + page_bonus
-        section["importance_score"] = final_score
+        # Calculate quality score
+        quality_score = (
+            quality_features['content_length'] * 0.3 +
+            quality_features['title_quality'] * 0.2 +
+            quality_features['has_structured_content'] * 0.3 +
+            quality_features['position_score'] * 0.2
+        )
+        
+        # Combined initial score
+        initial_score = alignment_score * 0.7 + quality_score * 0.3
+        
+        scored_sections.append((initial_score, section, section_text))
     
-    # Step 5: Sort and select top sections
-    valid_sections.sort(key=lambda s: s["importance_score"], reverse=True)
+    # Sort by initial score and select top candidates for cross-encoder re-ranking
+    scored_sections.sort(key=lambda x: x[0], reverse=True)
     
-    # Step 6: Ensure document diversity in final selection
+    # Select more candidates than needed for cross-encoder re-ranking
+    rerank_pool_size = min(len(scored_sections), max(top_n * 3, 15))
+    candidates_for_rerank = scored_sections[:rerank_pool_size]
+    
+    print(f"🔄 Re-ranking top {len(candidates_for_rerank)} candidates with cross-encoder")
+    
+    # Cross-encoder re-ranking
+    final_sections = []
+    
+    try:
+        # Prepare cross-encoder inputs
+        ce_pairs = []
+        section_map = []
+        
+        for score, section, section_text in candidates_for_rerank:
+            ce_pairs.append([job_task, section_text])
+            section_map.append((score, section))
+        
+        # Get cross-encoder scores
+        with torch.no_grad():
+            ce_scores = cross_encoder_model.predict(ce_pairs, batch_size=batch_size)
+        
+        # Combine scores (weighted combination of bi-encoder and cross-encoder)
+        for i, (initial_score, section) in enumerate(section_map):
+            ce_score = ce_scores[i]
+            
+            # Weighted combination: cross-encoder gets more weight for final ranking
+            final_score = initial_score * 0.3 + ce_score * 0.7
+            
+            section_copy = section.copy()
+            section_copy['relevance_score'] = final_score
+            final_sections.append(section_copy)
+    
+    except Exception as e:
+        print(f"⚠️ Cross-encoder failed: {e}. Using bi-encoder scores only.")
+        # Fallback to bi-encoder scores
+        for score, section, _ in candidates_for_rerank:
+            section_copy = section.copy()
+            section_copy['relevance_score'] = score
+            final_sections.append(section_copy)
+    
+    # Final sorting and selection
+    final_sections.sort(key=lambda x: x['relevance_score'], reverse=True)
+    
+    # Ensure document diversity in final selection
     selected_sections = []
-    document_counts = Counter() # Use Counter for convenience
+    doc_counts = Counter()
+    max_per_doc = max(1, top_n // 3)  # Allow at most 1/3 of selections from same doc
     
-    for section in valid_sections:
+    for section in final_sections:
         if len(selected_sections) >= top_n:
             break
         
-        doc = section.get("document", "")
-        
-        # Limit sections per document to ensure diversity, e.g., max 2 sections per document
-        if document_counts[doc] < 2: # Tunable: max sections from one document
+        doc_name = section.get('document', '')
+        if doc_counts[doc_name] < max_per_doc:
             selected_sections.append(section)
-            document_counts[doc] += 1
+            doc_counts[doc_name] += 1
     
-    # If not enough sections after diversity filter, fill remaining slots from top ranked
-    # without strict document limit
+    # Fill remaining slots if needed
     if len(selected_sections) < top_n:
-        for section in valid_sections:
+        for section in final_sections:
             if len(selected_sections) >= top_n:
                 break
-            if section not in selected_sections: # Add if not already selected
+            if section not in selected_sections:
                 selected_sections.append(section)
     
-    # Step 7: Assign final ranks and clean up temporary scores
+    # Assign final ranks and clean up
     for i, section in enumerate(selected_sections[:top_n]):
-        section["importance_rank"] = i + 1
-        section.pop("alignment_score", None)
-        section.pop("importance_score", None)
+        section['importance_rank'] = i + 1
+        section.pop('relevance_score', None)
     
-    print(f"🎯 Selected {len(selected_sections[:top_n])} top sections")
+    print(f"✅ Selected {len(selected_sections[:top_n])} top sections")
     
     return selected_sections[:top_n]
 
 
-def calculate_semantic_alignment_with_embedding(section, task_requirements, model, section_embedding):
+def extract_focused_snippet(text: str, query: str, bi_encoder_model, cross_encoder_model, 
+                          max_words: int = 60, context_sentences: int = 1, batch_size: int = 32) -> str:
     """
-    Helper for calculate_semantic_alignment when section_embedding is already provided.
-    Avoids re-encoding.
-    """
-    try:
-        with torch.no_grad():
-            task_embedding = task_requirements.get('task_embedding')
-            
-            if task_embedding is None:
-                # Fallback to keyword matching if task embedding failed (should ideally not happen here)
-                return calculate_keyword_overlap(f"{section.get('section_title', '')} {section.get('content', '')}", task_requirements)
-            
-            semantic_score = util.cos_sim(task_embedding, section_embedding).item()
-            
-            positive_terms = task_requirements.get('positive_terms', [])
-            phrase_scores = []
-            
-            if positive_terms:
-                positive_term_embeddings = [task_requirements['term_embeddings'][p] for p in positive_terms if p in task_requirements['term_embeddings']]
-                
-                if positive_term_embeddings:
-                    term_sims = util.cos_sim(torch.stack(positive_term_embeddings), section_embedding).flatten().tolist()
-                    phrase_scores.extend(term_sims)
-                    
-                    if phrase_scores:
-                        phrase_scores.sort(reverse=True)
-                        avg_top_phrases_score = np.mean(phrase_scores[:min(len(phrase_scores), 3)])
-                        combined_score = (semantic_score * 0.7) + (avg_top_phrases_score * 0.3)
-                    else:
-                        combined_score = semantic_score
-                else:
-                    combined_score = semantic_score
-            else:
-                combined_score = semantic_score
-            
-            return combined_score
-    except Exception as e:
-        print(f"Error calculating semantic alignment with pre-computed embedding: {e}. Falling back to keyword overlap.")
-        return calculate_keyword_overlap(f"{section.get('section_title', '')} {section.get('content', '')}", task_requirements)
-
-
-def extract_focused_snippet(text, query, model, max_words=50, context_sentences=1, batch_size=32):
-    """
-    Extract a highly focused snippet that directly addresses the query,
-    including a tunable number of surrounding sentences for context.
+    Improved snippet extraction with better sentence boundary detection and context preservation.
+    Fixed to avoid truncation artifacts and ensure clean text output.
     """
     if not text or len(text.strip()) < 15:
         return ""
     
     text = clean_text(text)
     
-    # Split into sentences more robustly
-    # Use a regex that keeps the delimiter but splits, then refine
-    raw_sentences = re.split(r'([.!?;\n])', text) # Split by common sentence endings and newlines
+    # Improved sentence splitting with better handling of sentence boundaries
+    # Split on sentence boundaries but be more careful about reconstruction
     sentences = []
-    buffer = ""
-    for part in raw_sentences:
-        buffer += part
-        if part.strip() in ['.', '!', '?', ';', '\n']:
-            sentence = buffer.strip()
-            if sentence and len(sentence.split()) >= 2: # Minimum 2 words
-                sentences.append(sentence)
-            buffer = ""
-    if buffer: # Add any remaining text as a sentence
-        sentence = buffer.strip()
-        if sentence and len(sentence.split()) >= 2:
+    
+    # Use a more robust sentence splitting approach
+    # First normalize whitespace and handle common abbreviations
+    text_normalized = re.sub(r'\s+', ' ', text)
+    
+    # Split on sentence endings, keeping track of positions
+    sentence_boundaries = list(re.finditer(r'[.!?;]\s+', text_normalized))
+    
+    if not sentence_boundaries:
+        # No clear sentence boundaries found, return truncated text
+        words = text_normalized.split()
+        if len(words) <= max_words:
+            return text_normalized
+        else:
+            # Find a good breaking point near the word limit
+            truncated_words = words[:max_words]
+            truncated_text = " ".join(truncated_words)
+            
+            # Try to end at a natural break (comma, semicolon, etc.)
+            natural_breaks = [',', ';', ')', ']', '}']
+            for i in range(len(truncated_text) - 1, max(0, len(truncated_text) - 50), -1):
+                if truncated_text[i] in natural_breaks:
+                    return truncated_text[:i + 1]
+            
+            return truncated_text
+    
+    # Extract sentences based on boundaries
+    start = 0
+    for boundary in sentence_boundaries:
+        end = boundary.end()
+        sentence = text_normalized[start:end].strip()
+        if sentence and len(sentence.split()) >= 3:  # At least 3 words
             sentences.append(sentence)
-
-    sentences = [s for s in sentences if s] # Remove empty strings
-
+        start = end
+    
+    # Add any remaining text as the last sentence
+    if start < len(text_normalized):
+        remaining = text_normalized[start:].strip()
+        if remaining and len(remaining.split()) >= 3:
+            sentences.append(remaining)
+    
     if not sentences:
-        words = text.split()
-        return " ".join(words[:max_words]) + ("..." if len(words) > max_words else "")
+        # Fallback to word-based truncation
+        words = text_normalized.split()
+        if len(words) <= max_words:
+            return text_normalized
+        else:
+            return " ".join(words[:max_words])
     
     if len(sentences) == 1:
-        words = sentences[0].split()
+        # Only one sentence, handle length constraint
+        sentence = sentences[0]
+        words = sentence.split()
         if len(words) <= max_words:
-            return sentences[0]
+            return sentence
         else:
-            return " ".join(words[:max_words]) + "..."
+            # Truncate at word boundary, try to find natural break
+            truncated_words = words[:max_words]
+            truncated_text = " ".join(truncated_words)
+            
+            # Look for natural breaks near the end
+            natural_breaks = [',', ';', ')', ']', '}', 'and', 'or', 'but', 'that', 'which']
+            for i in range(len(truncated_words) - 1, max(0, len(truncated_words) - 10), -1):
+                if truncated_words[i].rstrip('.,;!?') in natural_breaks:
+                    return " ".join(truncated_words[:i + 1])
+            
+            return truncated_text
     
+    # Use cross-encoder to find the most relevant sentence
     try:
         with torch.no_grad():
-            query_embedding = model.encode(query, convert_to_tensor=True)
-            sentence_embeddings = model.encode(sentences, convert_to_tensor=True, batch_size=batch_size)
-            similarities = util.cos_sim(query_embedding, sentence_embeddings)[0]
-        
-        best_idx = similarities.argmax().item()
-        
-        # Combine best sentence with surrounding context sentences
-        start_idx = max(0, best_idx - context_sentences)
-        end_idx = min(len(sentences), best_idx + context_sentences + 1)
-        
-        contextual_snippet_sentences = sentences[start_idx:end_idx]
-        combined_snippet_text = " ".join(contextual_snippet_sentences)
-        
-        # Truncate combined snippet to max_words
-        words = combined_snippet_text.split()
-        if len(words) <= max_words:
-            return combined_snippet_text
-        else:
-            return " ".join(words[:max_words]) + "..."
+            # Create query-sentence pairs for cross-encoder
+            ce_pairs = [[query, sentence] for sentence in sentences]
+            ce_scores = cross_encoder_model.predict(ce_pairs, batch_size=batch_size)
             
-    except Exception as e:
-        print(f"Error in focused snippet extraction (semantic): {e}. Fallback to simple truncation.")
-        # Fallback: return first sentence or truncated text
-        if sentences:
-            words = sentences[0].split()
+            # Find the best sentence
+            best_idx = np.argmax(ce_scores)
+            best_sentence = sentences[best_idx]
+            
+            # Add context sentences around the best one
+            start_idx = max(0, best_idx - context_sentences)
+            end_idx = min(len(sentences), best_idx + context_sentences + 1)
+            
+            context_sentences_list = sentences[start_idx:end_idx]
+            combined_text = " ".join(context_sentences_list)
+            
+            # Handle length constraint for combined text
+            words = combined_text.split()
             if len(words) <= max_words:
-                return sentences[0]
+                return combined_text
             else:
-                return " ".join(words[:max_words]) + "..."
+                # Try to keep the most relevant sentence intact if possible
+                best_sentence_words = best_sentence.split()
+                if len(best_sentence_words) <= max_words:
+                    # Keep the best sentence and add context up to word limit
+                    remaining_words = max_words - len(best_sentence_words)
+                    
+                    # Add context before
+                    before_sentences = sentences[start_idx:best_idx]
+                    after_sentences = sentences[best_idx + 1:end_idx]
+                    
+                    context_parts = []
+                    context_words_used = 0
+                    
+                    # Add sentences after the best one first (usually more relevant)
+                    for sent in after_sentences:
+                        sent_words = sent.split()
+                        if context_words_used + len(sent_words) <= remaining_words:
+                            context_parts.append(sent)
+                            context_words_used += len(sent_words)
+                        else:
+                            break
+                    
+                    # Add sentences before if there's still room
+                    for sent in reversed(before_sentences):
+                        sent_words = sent.split()
+                        if context_words_used + len(sent_words) <= remaining_words:
+                            context_parts.insert(0, sent)
+                            context_words_used += len(sent_words)
+                        else:
+                            break
+                    
+                    # Combine: before_context + best_sentence + after_context
+                    before_context = " ".join([s for s in context_parts if sentences.index(s) < best_idx])
+                    after_context = " ".join([s for s in context_parts if sentences.index(s) > best_idx])
+                    
+                    result_parts = []
+                    if before_context:
+                        result_parts.append(before_context)
+                    result_parts.append(best_sentence)
+                    if after_context:
+                        result_parts.append(after_context)
+                    
+                    return " ".join(result_parts)
+                else:
+                    # Best sentence is too long, truncate it
+                    truncated_words = best_sentence_words[:max_words]
+                    return " ".join(truncated_words)
+    
+    except Exception as e:
+        print(f"Warning: Cross-encoder failed in snippet extraction: {e}")
+        # Fallback to first sentence with length handling
+        first_sentence = sentences[0]
+        words = first_sentence.split()
+        if len(words) <= max_words:
+            return first_sentence
         else:
-            words = text.split()
-            return " ".join(words[:max_words]) + ("..." if len(words) > max_words else "")
+            return " ".join(words[:max_words])
 
-def extract_top_paragraphs(section_text, query, page_number, document, model, section_title="", top_k=1, batch_size=32):
+
+def extract_top_paragraphs(section_text: str, query: str, page_number: int, document: str,
+                          bi_encoder_model, cross_encoder_model, section_title: str = "", 
+                          top_k: int = 1, batch_size: int = 32) -> List[Dict]:
     """
-    Extract focused, relevant snippets from section content, leveraging the improved
-    extract_focused_snippet function.
+    Improved paragraph extraction with better content segmentation and cleaner output.
     """
-    if not section_text or len(section_text.strip()) < 20:
+    if not section_text or len(section_text.strip()) < 30:
         return []
     
-    # Create focused extraction query
-    extraction_query = f"Information about: {query}"
+    # Create a more specific query for extraction
+    extraction_query = f"Relevant information for: {query}"
     if section_title:
-        extraction_query = f"From {section_title}: {extraction_query}"
+        extraction_query = f"From section '{section_title}': {extraction_query}"
     
-    # Split into paragraphs more carefully (removes empty ones)
-    paragraphs = [p.strip() for p in re.split(r'\n\s*\n+', clean_text(section_text)) if p.strip()]
+    # Better paragraph segmentation
+    # Split on multiple newlines, bullet points, and numbered lists
+    paragraph_splits = re.split(r'\n\s*\n+|\n\s*[-•]\s*|\n\s*\d+\.\s*|\n\s*[a-zA-Z]\.\s*', section_text)
+    paragraphs = [p.strip() for p in paragraph_splits if p.strip() and len(p.split()) >= 5]
     
     if not paragraphs:
-        # If no clear paragraphs, treat entire content as one block for snippet extraction
-        snippet = extract_focused_snippet(section_text, extraction_query, model, max_words=50, batch_size=batch_size)
-        if snippet and len(snippet.split()) >= 3:
+        # Fallback: treat entire content as one paragraph
+        snippet = extract_focused_snippet(section_text, extraction_query, bi_encoder_model, 
+                                        cross_encoder_model, max_words=70, batch_size=batch_size)
+        if snippet and len(snippet.split()) >= 5:
             return [{
                 "document": document,
                 "refined_text": snippet,
@@ -575,33 +581,40 @@ def extract_top_paragraphs(section_text, query, page_number, document, model, se
             }]
         return []
     
-    best_snippet = ""
-    
+    # Use cross-encoder to find the best paragraph
     try:
         with torch.no_grad():
-            query_embedding = model.encode(extraction_query, convert_to_tensor=True)
-            para_embeddings = model.encode(paragraphs, convert_to_tensor=True, batch_size=batch_size)
-            similarities = util.cos_sim(query_embedding, para_embeddings)[0]
-        
-        # Get best paragraph index
-        best_idx = similarities.argmax().item()
-        best_para = paragraphs[best_idx]
-        
-        # Extract focused snippet from the best paragraph, including context sentences
-        best_snippet = extract_focused_snippet(best_para, extraction_query, model, max_words=50, context_sentences=1, batch_size=batch_size)
-        
-    except Exception as e:
-        print(f"Error extracting top paragraph (semantic): {e}. Fallback to first paragraph.")
-        # Fallback: use first paragraph if embedding fails
-        if paragraphs:
-            best_snippet = extract_focused_snippet(paragraphs[0], extraction_query, model, max_words=50, context_sentences=1, batch_size=batch_size)
+            # Limit paragraph length for processing
+            processed_paragraphs = [p[:800] for p in paragraphs]
+            
+            ce_pairs = [[extraction_query, p] for p in processed_paragraphs]
+            ce_scores = cross_encoder_model.predict(ce_pairs, batch_size=batch_size)
+            
+            best_idx = np.argmax(ce_scores)
+            best_paragraph = paragraphs[best_idx]
+            
+            # Extract focused snippet from the best paragraph
+            snippet = extract_focused_snippet(best_paragraph, extraction_query, bi_encoder_model,
+                                           cross_encoder_model, max_words=75, batch_size=batch_size)
+            
+            if snippet and len(snippet.split()) >= 5:
+                return [{
+                    "document": document,
+                    "refined_text": snippet,
+                    "page_number": page_number
+                }]
     
-    # Return result if we have a good snippet
-    if best_snippet and len(best_snippet.split()) >= 3: # Ensure snippet has at least 3 words
-        return [{
-            "document": document,
-            "refined_text": best_snippet,
-            "page_number": page_number
-        }]
+    except Exception as e:
+        print(f"Warning: Error in paragraph extraction: {e}")
+        # Fallback to first paragraph
+        if paragraphs:
+            snippet = extract_focused_snippet(paragraphs[0], extraction_query, bi_encoder_model,
+                                           cross_encoder_model, max_words=75, batch_size=batch_size)
+            if snippet and len(snippet.split()) >= 5:
+                return [{
+                    "document": document,
+                    "refined_text": snippet,
+                    "page_number": page_number
+                }]
     
     return []
