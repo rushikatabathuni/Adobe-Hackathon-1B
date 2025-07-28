@@ -576,7 +576,7 @@ def extract_outline_and_text(pdf_path):
 if __name__ == '__main__':
     # Use a dummy path for testing if no argument is provided
     # In a real environment, you'd likely pass a valid PDF path
-    path = sys.argv[1] if len(sys.argv) > 1 else "dummy_input.pdf" 
+    path = sys.argv[1] if len(sys.argv) > 1 else "C:/Users/wow04/Downloads/archive1/Pdf/11613a97cef51ad28635fdd86915e74d94cff227.pdf" 
     
     # For actual testing, replace "dummy_input.pdf" with a path to a real PDF file
     # For example: path = "path/to/your/document.pdf"

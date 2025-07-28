@@ -1,146 +1,128 @@
 {
-  "title": "Add comments while viewing a PDF",
+  "title": "",
   "outline": [
     {
       "level": "H1",
-      "text": "Annotations and drawing markup tools overview",
-      "page": 2
-    },
-    {
-      "level": "H1",
-      "text": "Show annotations and drawing markup tools",
-      "page": 2
-    },
-    {
-      "level": "H1",
-      "text": "Select an annotation or drawing markup tool",
-      "page": 3
-    },
-    {
-      "level": "H1",
-      "text": "Keep an annotation tool selected",
-      "page": 4
-    },
-    {
-      "level": "H1",
-      "text": "Add a comment",
-      "page": 5
-    },
-    {
-      "level": "H1",
-      "text": "Steps to add a comment",
-      "page": 5
-    },
-    {
-      "level": "H1",
-      "text": "Edit a comment",
-      "page": 5
-    },
-    {
-      "level": "H1",
-      "text": "Change font size of annotation comments",
-      "page": 6
-    },
-    {
-      "level": "H1",
-      "text": "Copy partial text in a comment",
-      "page": 6
-    },
-    {
-      "level": "H1",
-      "text": "Delete a comment",
-      "page": 6
-    },
-    {
-      "level": "H1",
-      "text": "Add a text comment",
-      "page": 7
-    },
-    {
-      "level": "H1",
-      "text": "Add reactions to comments on shared files",
+      "text": "Signer's experience",
       "page": 8
     },
     {
       "level": "H1",
-      "text": "Add an arrow, or shape",
+      "text": "Steps to send in bulk",
       "page": 9
     },
     {
       "level": "H1",
-      "text": "Add a line",
-      "page": 10
+      "text": "Manage your bulk sends",
+      "page": 17
     },
     {
       "level": "H1",
-      "text": "Group and ungroup markups",
-      "page": 11
+      "text": "Why use certificate signatures?",
+      "page": 20
     },
     {
       "level": "H1",
-      "text": "Group markups",
-      "page": 11
+      "text": "What can I do with certificate IDs?",
+      "page": 20
     },
     {
       "level": "H1",
-      "text": "Ungroup markups",
-      "page": 11
+      "text": "What if my organization isn\u2019t prepared to set up certificate-based signatures?",
+      "page": 21
     },
     {
       "level": "H1",
-      "text": "Add comments in a text box or callout",
-      "page": 12
+      "text": "Resources",
+      "page": 21
     },
     {
       "level": "H1",
-      "text": "Add a comment in text box",
-      "page": 12
-    },
-    {
-      "level": "H2",
-      "text": "Set or change properties for the text box",
-      "page": 12
+      "text": "Steps to add a certificate-based signature to a PDF",
+      "page": 22
     },
     {
       "level": "H1",
-      "text": "Add a comment in callout",
-      "page": 13
+      "text": "Certifying and signing documents",
+      "page": 23
     },
     {
       "level": "H1",
-      "text": "Add comments in a file attachment",
-      "page": 14
+      "text": "Setting up certificate-based signatures",
+      "page": 24
     },
     {
       "level": "H1",
-      "text": "Commenting preferences",
-      "page": 15
+      "text": "Set signing preferences",
+      "page": 25
     },
     {
-      "level": "H2",
-      "text": "Viewing comments",
-      "page": 15
+      "level": "H1",
+      "text": "Customizing signature workflows using seed values",
+      "page": 25
+    },
+    {
+      "level": "H1",
+      "text": "Create the appearance of a certificate-based signature",
+      "page": 25
+    },
+    {
+      "level": "H1",
+      "text": "Set up a roaming ID account",
+      "page": 26
+    },
+    {
+      "level": "H1",
+      "text": "PKCS#12 modules and tokens",
+      "page": 27
+    },
+    {
+      "level": "H1",
+      "text": "Store certificates on directory servers",
+      "page": 27
+    },
+    {
+      "level": "H1",
+      "text": "Import directory server settings (Windows only)",
+      "page": 27
+    },
+    {
+      "level": "H1",
+      "text": "Export directory server settings (Windows only)",
+      "page": 28
+    },
+    {
+      "level": "H1",
+      "text": "Add a timestamp to certificate-based signatures",
+      "page": 29
+    },
+    {
+      "level": "H1",
+      "text": "Set a timestamp server as the default",
+      "page": 30
     }
   ],
   "page_text": {
-    "1": "Add comments while viewing a PDF \ndocument \nYou can now use quick actions in a floating toolbar to add comments while viewing a PDF. \nThe following quick actions are available for commenting based on your selection in a PDF: \n\u2022 \nActions on text selection: When you select text, you can perform actions like Highlight text, \nUnderline text, Strikethrough text, Redact text, Copy text, and Edit a PDF. \n \n\u2022 \nActions on image selection: When you select an image you can perform actions like \nAdd sticky note, Highlight image, Redact image, Copy Image, and Edit a PDF. \n \n\u2022 \nActions on highlighted selection: When you select an existing highlighted comment \nin a PDF you see quick actions to Add Note, Change Color, or Delete the comment. \n",
-    "2": " \nAnnotations and drawing markup tools \noverview \nNote: In Acrobat Reader, complete commenting tools are available only in PDFs \nwith commenting enabled. \nYou can use annotation and drawing markup tools to add comments. Comments are notes \nand drawings that communicate ideas or provide feedback for PDFs. You can type a text \nmessage using the Add text comment tool. Alternatively, you can use a drawing tool to add a \nline, circle, or other shape and then type a message in the associated pop-up note. Text-\nediting tools let you add editing marks to indicate changes that you want in the source \ndocument. \n \nNote:  \nIn Acrobat Pro, you can add tags to your comments so that readers with motion or vision \nlimitations can read them using assistive technologies. \n \nShow annotations and drawing markup tools \nAnnotations and markup tools don\u2019t appear by default, except when you open a PDF in a \nmanaged review workflow. \n1. Choose the Comments icon on the right pane to see the added comments. \n",
-    "3": "Comment pane \n2. The drawing markup tools are grouped under the Draw freehand tool in the floating \nquick tools menu on the left. \nDrawing Tools menu \nSelect an annotation or drawing markup tool \nFrom the quick tools menu on the left, select the desired annotation to add to the PDF. \n",
-    "4": " \nNote: After you make an initial comment, the tool changes back to the Select tool so that \nyou can move, resize, or edit your comment. (The Pencil and Highlight Text tools stay \nselected.) \n \nKeep an annotation tool selected \nYou can add multiple comments without reselecting the tool. \n1. In the Comment tools, select the tool you want to use (but don\u2019t use it yet). \n2. Select the Use the same tool until it's unselected icon \n. \n \n \n",
-    "5": "Add a comment \nNote: In Acrobat Reader, complete commenting tools are available only in PDFs that \nhave commenting enabled. PDFs in a review workflow typically include commenting \nrights. \nThe most common type of comment is the Add a comment that resembles a sticky note. \nThe comment appears as a note icon on the page and a pop-up note for your text \nmessage. You can Add a comment anywhere on the page or in the document area. \nUse the Add a comment tool to add a text message in a pop-up note. \nSteps to add a comment \n1. Select the Add a comment tool \n from the quick tools menu, and select where you \nwant to place the note. \n2. Type text in the pop-up note. You can also use the Select tool \n to copy and paste \ntext from a PDF into the note. \n \nNote: If you close the pop-up note, your text remains. \n \n \nEdit a comment \n1. Select or double-click the note icon. \n2. (Optional) To change the comment properties, right-click the sticky note icon or from \nthe options menu of the comment, select Properties. Modify the Sticky Note Properties \nas desired and select OK. \n",
-    "6": " \nChange font size of annotation comments \n1. Open the Preferences dialog box by pressing Ctrl + K (Windows) or command + \nK (macOS). \n2. Under Categories, select Commenting.  \n3. Select the Font Size drop-down menu and select the desired font size. \n4. Select OK. \nNote: Use the Commenting panel in the Preferences dialog box to change default pop-up \nbehavior, and other settings for creating and viewing comments \n \nCopy partial text in a comment \n1. Click or double-click the note icon. \n2. Select the text, and then right-click and copy text. \n \nDelete a comment \n1. Open the PDF document in Adobe Acrobat. Locate and select the comment icon you \nwant to delete. \n2. Select Delete   from the contextual menu. \n \n \n",
-    "7": "Add a text comment \nUse the Add text comment tool to type text anywhere on the PDF page. \n1. From the Quick action toolbar menu, select Add a comment > Add text Comment. \n2. Select the location on the page where you want to add the comment.  \n3. (Optional) To change the text formatting, double-click the added text comment, select \nthe text, and then select the font, text alignment, and other text formatting you want. \n \n \n",
-    "8": "Add reactions to comments on shared files \nYou can now enhance your reviews on shared PDFs in Acrobat by adding reaction emojis to \ncomments, making the reviews more interactive. To add reactions: \n1. Open a shared PDF and select the Comments panel. \n2. Select the emoticon icon next to the comment you want to react to. A dialog box \nappears. \n \n3. Select an emoticon from the dialog box or use the search bar to find and select your \ndesired reaction. \n \n \n",
-    "9": "Add an arrow, or shape \nNote: In Acrobat Reader , drawing tools are available only in PDFs that have commenting \nenabled. PDFs in a review workflow typically include commenting rights. \nWhen selecting a drawing tool, consider the effect you want. \n1. From the Quick action toolbar, select the Draw freehand tool and then select the \ndesired drawing markup tool: \n  \n\u2022 \nThe Line tool \n,  the Arrow tool \n, the Rectangle tool \n, \nand the Circle tool \n lets you create simple shapes.  \n\u2022 \nThe Cloud tool \n and Polygon tool \n create closed shapes with multiple \nsegments. The Connected lines tool \n creates open shapes with multiple \nsegments. \n\u2022 \nThe Draw tool creates free-form drawings, and the Erase a \ndrawing tool \n removes the drawing markups. \nNote: To specify the line width, color, and other properties before you draw, select the \ndesired tool, and press Ctrl+E to open the properties toolbar. Set the desired options in the \nProperties toolbar. \n2. Draw in the PDF: \n  \n\u2022 \nTo create a cloud or polygon shape, click to create the start point, move the \npointer, and click to create each segment. To finish drawing the shape, click the \nstart point, or right-click and choose Complete from the menu. Double-click to \nend a polygon line. \n\u2022 \nTo draw a line, arrow, or rectangle, either drag across the area where you want \nthe markup to appear, or click twice: once to create the start point and once to \ncreate the end point. \n\u2022 \nTo draw a square or circle, or to draw a line that\u2019s horizontal, vertical, or at a 45\u00b0 \nangle, press Shift while you draw. \n\u2022 \nTo draw free-form lines using the Draw tool, drag where you want to begin \ndrawing. You can release the mouse button, move the pointer to a new \nlocation, and continue drawing. To erase parts of the drawing, select the Erase \n",
-    "10": "a drawing tool \n and drag across the areas of the drawing that you want to \nremove. \n3. To edit or resize the markup, select it and drag one of the handles to make your \nadjustments. \n4. To add a note to the markup, select the markup and then select Add note in the quick \naction pop-up menu. \n \nAdd note to markup \n5. (Optional) Click the close button in the pop-up note. A note icon appears to the right \nof the markup to indicate the presence of text in the pop-up note. \n \nNote:  To delete a drawing markup, select it and press Delete. \nAlso, you can edit PDFs with comments online. Our online PDF editor lets you easily add text, \nsticky notes, highlights, drawings, and more to PDFs. \n \nAdd a line  \n1. From the Quick action toolbar, select the Draw freehand tool. \n2. Select the Line tool \n.  \n3. Drag across the area where you want the line to appear. \n \n \n",
-    "11": "Group and ungroup markups \nYou can group two or more markups so that your comments function as a single comment. \nYou might group markups temporarily to move them to a new location or to modify their \nproperties rather than editing each one individually. Grouping also helps to distinguish your \nmarkups from other reviewers\u2019 markups in a document review. \nNote: You cannot group text edit markups. \nGroup markups \n1. Using the Select tool or the Hand tool, select a markup. \n2. Ctrl-click/Command-click to select the markups you want to group. \n3. Right-click within the selection, and choose Group. \nUngroup markups \n1. Right-click the grouped selection, and choose Ungroup. \n \n \n",
-    "12": "Add comments in a text box or callout \nYou can use the Add text comment tool to create a box that contains text. You can position it \nanywhere on the page and adjust it to any size. A text box remains visible on the document \npage; it doesn\u2019t close like a pop-up note. \nText font and size are based on the system's default settings. \nNote:  \nYou can add comments to Japanese, Chinese, and Korean text with the Text Box tool, \nbut you must have the Asian-language resource files installed. Text boxes allow for \nhorizontal text only. \nYou can use the Text callout tool to create a callout text box. Callout text boxes are handy \nwhen you want to single out\u2014but not obscure\u2014a particular area of a document. Callout text \nboxes have three parts: a text box, a knee line, and an end-point line. You can resize each part \nby dragging a handle. The knee line can be resized in one direction only; horizontal knee lines \ncan be resized horizontally only; vertical knee lines can be resized vertically only. The text box \nexpands vertically as you type so that all text remains visible. \nYou can move the text box itself or together with the end-point line. The text box moves \naround a stationary anchor point\u2014the arrow on the end-point line\u2014created when you first \nclick in the PDF. You can modify the color and appearance of the text box and add arrows or \nleaders to the end-point line. \n \nAdd a comment in text box \n1. From the Quick action toolbar, select Add a comment > Add text comment. \n2. Select a location in the PDF where you want to add the text. \n  \nEnter the text. The text wraps automatically when it reaches the right edge of the box. \n \nSet or change properties for the text box \nSelect the Set or change properties for the selected text icon in the quick tools menu to \nchange the text color, alignment, and font attributes for the text. \nTo make further changes to the text box: \n",
-    "13": "\u2022 \nUsing the Select tool, select an edge of the text box and then drag a corner to resize it. \nRight-click the text box to open the Text Box Properties and change the border and fill \noptions. \n\u2022 \nDouble-click the text box to edit the text or change the text attributes. Drag across the \ntext to select it, then select options from the quick tools menu. \nTo delete the text box, select it and then press Delete. \n \nNote: You can also paste a block of text by selecting and copying the text in any \napplication, selecting the Hand tool in Acrobat, and choosing Edit > Paste. \n \nAdd a comment in callout \n1. From the quick tools menu, select Draw freehand > Text callout. \n2. Select once to set the location of the end point, and select again to set the location of \nthe text box. \n3. (Optional) Select Set or change properties for the selected text icon in the quick \ntools menu, and then select the text's color, alignment, and font attributes. \n4. Enter the text. Text wraps automatically when it reaches the right edge of the box. \n5. (Optional) To make further changes to the text box: \n  \n\u2022 \nTo resize the callout, select it and drag any of the handles that appear. \n\u2022 \nTo move the text box, click inside the box and drag it. \n\u2022 \nTo move the entire callout, click either the end-point line or an edge of the text \nbox, and drag it. \n\u2022 \nTo change the color, opacity, or line characteristics, right-click and \nchoose Properties, and then select the options you want. \n \n \n",
-    "14": "Add comments in a file attachment \n \nNote: In Acrobat Reader, commenting tools are available only in PDFs that have \ncommenting enabled. PDFs in a review workflow typically include commenting rights. \nUse the Attach file tool to embed a file at a selected location in a PDF, so that the reader can \nopen it for viewing. By adding attachments as a comment, you can reference longer \ndocuments that can\u2019t easily be pasted into a pop-up note or text box. If you move the PDF to \na new location, the embedded file automatically goes with it. To view an attachment, the \nreader must have an application installed that can open the attachment. \n \nNote: Be sure to use the Attach file option from the Add Comments tool when \nattaching files for a document review. Document-level file attachments that you attach \nusing the Attach file tool from the  Edit > More menu aren\u2019t tracked with other \ncomments in a review workflow and may cause your attached comments to be lost. \n1. From the quick tools menu, select Add a comment > Attach file. \n2. Click in the PDF where you want to place the attachment. \n3. Select the file that you want to attach, and then click Open. If you\u2019re attaching a PDF, \nyou can highlight areas of interest in the file using comments. \n4. In the File Attachment Properties dialog box, select the settings for the file icon that \nappears in the PDF and select OK. \nThe comment attachment also appears in the Attachments tab (in the right navigation \npane) with a page number indicating its location. \nNote: To delete the attachment, right-click the attached comment icon, and choose \nDelete. \n \n \n",
-    "15": "Commenting preferences \nCommenting preferences affect both the appearance of and the way you view annotations \nand markups in PDFs. \nNote: A reviewer can place comments anywhere within the document frame. As a \nresult, sometimes you need to scroll or zoom out to see comments that are located off \nthe page. \nIn the Preferences dialog box under Categories, select Commenting. \n \nViewing comments \nFont, Font Size \nIn Windows, you can determine the font and the size of text in pop-up notes. In Mac OS, you \ncan select only Large, Medium, or Small settings for the font. This setting applies to all new \nand existing comments. \nPop-up Opacity \nDetermines the opacity of comment pop-up notes in values from 1 to 100. When a pop-up \nnote is open but not selected, an opacity value of 100 makes the note opaque, while lower \nvalues make it more transparent. \nEnable Text Indicators And Tooltips \nShows a tool tip when you place the pointer over a comment that includes a pop-up note. \nThe tool tip contains the author name, comment status, and two lines of the text. Selected by \ndefault. \nPrint Notes And Pop-ups \nSpecifies that pop-up notes associated with comments, and icons for note, audio, and file \nattachments print exactly as they appear on the page. \nInstead of selecting this option, you can print comment text in various layouts by choosing \nFile > Print, and click Summarize Comments. \nShow Lines Connecting Comment Markups To Their Pop-ups On Mouse Rollover \nWhen you place the pointer over a comment markup (such as a highlight or a note icon), the \nshaded connector line appears. Selected by default. \nEnsure That Pop-ups Are Visible As The Document Is Scrolled \n",
-    "16": "As you scroll a PDF, the pop-up notes on a given page shift to stay in view within the \ndocument pane. Selected by default. \n"
-  }
-}ide both of these security services. Many businesses and \ngovernments have chosen to set up a certificate-based digital signature infrastructure within \ntheir organization. They use third-party certificate authorities to provide independent identity \nvalidation. Examples include: \nFor instance, companies in the European Union who need to comply with advanced or \nqualified electronic signature requirements in eIDAS e-signature regulation or the ETSI PAdES \nstandard (PDF Advanced Electronic Signatures). \n \nWhat can I do with certificate IDs? \nOnce certificate-based digital IDs have been provided to end users, they can \nuse Acrobat or Acrobat Reader software to sign PDF files and validate files they receive from \nothers. \nSign documents \n\u2022 \nSign PDF files using certificate IDs \n\u2022 \nPlace a signature box anywhere on the page \n\u2022 \nAdd multiple signatures to a page \n\u2022 \nAdd a time stamp to the document when working with a configured timestamp server \n\u2022 \nCertify a document with a visible or hidden signature so that recipients can verify \nauthenticity with or without seeing a visible signature on the page \n\u2022 \nAutomatically embed certificate data to support long-term validation \nValidate documents \n\u2022 \nValidate all signatures, confirming the identity of everyone who signed the document \n\u2022 \nValidate document integrity by tracking all previously signed versions of a document \nto verify changes made during the document\u2019s lifecycle \n",
+    "1": " \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n",
+    "2": "Send a document to get signatures from \nothers \n1. Open the PDF form in Acrobat or Acrobat Reader, and then choose All \ntools > Request E-signatures. Alternatively, you can select Sign from the top toolbar. \n2. The Request Signatures window is displayed. It displays the fields progressively as you \nenter the details. The left pane provides information on getting signatures from others \nworkflow. In the recipients field, add recipient email addresses in the order you want \nthe document to be signed. \n \nRequest signatures \u2013 Add recipients \n3. The Mail and Message fields are just like the ones you use for sending an email and \nappear to your recipients in the same way. Change the default text in the Subject \n& Message area as appropriate. \nOptional: If you want to add more people just for information, use the Add CC button \nto add their email addresses to the CC list. \nEnter the desired information and do one of the following: \n",
+    "3": "\u2022 \n(Optional) To explore advanced options including signer authentication, reminders, \nand more, click More Options. \n\u2022 \nTo add form fields and specify where to sign, click Specify where to sign. \nRequest signatures \u2013 Add Cc, subject, message, More Options \n\u2022 \nIf you don't want to use the More Options, skip the next optional step. \n4. (Optional) Click More Options, if you want to specify advanced options, such as signer \nauthentication, reminders, and more. \n\u2022 \nBy default, the Complete in Order setting is turned on. The numbers by the \nemail addresses reflect the participation order. If you do not want to follow any \nparticular order for signing, toggle the switch to Complete In Any Order. \n(Optional) Click Add Me, if you want to be included as a signer of the \ndocument. \n\u2022 \nSpecify authentication type like Email, Password, Social Identity, Knowledge-\nBased Authentication, Phone, or Acrobat Sign. \n\u2022 \nPassword Protect the PDF file. \n\u2022 \nSet a Completion Deadline. \n\u2022 \nSpecify the Recipient's Language in the email sent. \n",
+    "4": "More or \nAdvanced Options \n5. The Specify Where to Fill & Sign window is displayed showing options based on \nwhether you have added one signer or multiple signers. \n  \n\u2022 \nSimplified mode for single signer \nIf you've added one signer, the Advanced Editing mode is off, and you see the \nsimplified option as shown below. To place a signature or another field, click at the \ndesired location in the document and then set the field's properties from its context \nmenu. \n",
+    "5": " \n\u2022 \nSimplified mode for multiple signers \nThis mode provides simplified authoring with the capability of assigning fields to \nmultiple signers. When you select a signer from the right pane and add fields in the \nform, the fields are assigned to the signer. That means those fields will be available to \nthe signer for filling the information and signing the form. \n \n",
+    "6": "\u2022 \nYou can switch the assignee of any field using the floating toolbar. The assigned colors \nto the signers make it easy to distinguish the fields for respective signers. \n \n\u2022 \nAdvanced mode for multiple signers \nIf you've added multiple signers, you see the options as shown below. Click \nthe \n button to place the detected form fields in the PDF document. Alternatively, \ndrag fields from the tabs in the right pane and drop the fields where desired in the \ndocument. \n \nNote:  You can switch between simplified mode and advanced mode for multiple signers. \nTo switch mode, turn off the Advanced Editing switch in the right-pane. \n6. When you've placed all desired fields in the document, click Send. The document is \nsent for signature to the recipients and a confirmation notice is displayed. \n",
+    "7": " \nYou receive an email from Acrobat Sign stating that the agreements have been sent to the \nfirst signer for signature. The first signer also receives an email with a link to sign the \nagreement. When the signer adds his or her signature in the signature field and then clicks \nthe Click to sign button, the agreement is sent to the next signer with a link to sign, and so \non. Once the agreement is signed by all the signers, everyone gets a copy of the signed \nagreement. \nAll your signed documents are kept at one place and you can access them from anywhere. \n \n \n \n \n \n",
+    "8": "Signer's experience \nA signer receives an email with a link to sign the agreement. Also, if the signer uses Acrobat or \nAcrobat Reader desktop application, the signer sees a notification that an agreement has \nbeen shared for signing.  \nNote: Signers are not required to sign up or purchase any Adobe product to sign agreements. \nThey can sign agreements using a web browser, mobile device, or Acrobat / Acrobat Reader \ndesktop application. \nSend in bulk allows you to upload a form and use that as a template to create and send many \n(hundreds!) of unique agreements, each dedicated to one external signer. Each agreement is \ninsulated from the others and contains its own audit report. Each recipient is unaware of all \nother recipients. \nThe sender has access to the agreements through their Home or Documents tab or through \nthe Send in bulk template, which contains an Agreements report that tracks the overall status \nof the child agreements created from the template. Additionally, the sender can export the \nfield-level data of all completed agreements in a CSV format using the Download Form Field \nData action. \n \nTo access the Send in bulk feature, do one of the following: \n\u2022 \nIn the Acrobat desktop app, go to the Tools center, scroll down to the E-Sign section, \nand then select Send in bulk. \n\u2022 \nSign in to Acrobat online, select the E-Sign menu in the top navigation bar, and then \nselect Send in bulk. \n",
+    "9": " \n \nSteps to send in bulk \n1. Select the Send in Bulk tool as explained earlier. The Send in bulk file upload page \nis displayed. \n2. \nAdd a file: \nUpload (by search or drag-and-drop) the primary file that you are using to build \nyour agreement template. \nThe selector on the right of the Select a file button allows you to choose from the \nsource where the file resides. The default is your local system. \n",
+    "10": " \nOnce a file is selected, the configuration page loads. \n3. Add participants: \n1. List the participants required. \n\u2022 \nThe Sign action is assigned by default. \n\u2022 \nThe Sign action allows the participant to enter field data and sign the \nagreement. \n\u2022 \nUp to 50 participants are supported. \n\u2022 \nEach participant listed receives their own agreement.     \n2. Enter recipient email addresses followed by commas, or copy and paste a list of \nemail addresses into the Email field. \n3. Configure participant authentication by clicking the key icon to the right of the \nparticipant. \n\u2022 \nEmail is the default authentication method for confirming the identity of each \nparticipant and is sufficient to obtain a legal signature in most cases. \nPassword authentication can be added to increase security. When configured, the participant \nmust enter the password before they can interact with the agreement.  \n4. . (Optional) Add yourself and/or CC'd parties \n\u2022 \nClick Add me to add yourself as a counter signer. \n",
+    "11": "\u2022 \nClick Add cc to add people you want to be copied when the agreement is sent \nand complete. \n \n5. (Optional) Add additional files if needed. \nThe initial file selected to start the agreement template is already attached. \nUpload any additional file(s) that you require. \n\u2022 \nMultiple files can be uploaded. \n\u2022 \nAll files uploaded are concatenated into one file for the final agreement. \n\u2022 \nThe order the files are listed dictates how the final agreement will look. \n\u2022 \nYou can click and drag the files to sort them. \n",
+    "12": " \n\u2022 \nYou must share this password with the participants out-of-band. \n6. Add Agreement Details: \n\u2022 \nName your agreement. All agreements generated from the Send in \nbulk template will have the same agreement name. \n\u2022 \nChange the default text in the Message field as appropriate. \n7. Edit the Agreement settings (Optional): \nBy default, agreements do not require a password to view the completed agreement, \nnor do they have reminders set for participants \n\u2022 \nSelect Add access password if you require recipients to enter a password to \nopen and view the signed PDF file. \n\u2022 \nSelect Set Reminder to set the frequency of reminders to be sent until the \nagreement is completed. \n",
+    "13": " \n8. Click Next in the upper right corner of the window. \nThe document is now ready to add any fields that you want the signers to fill in or sign. \n \nNote:   If you have added multiple files, the files are converted into PDFs and combined into a \nsingle document. The combined document is opened for you to add fields. \n",
+    "14": "9. Prepare the Agreement and Add Fields: \nYou can now add any necessary fields to the agreement. Remember that \na Signature field must be placed for each signer (including internal counter-singers). \nThere are two methods to apply fields: \n1. Simple Authoring is loaded by default in most instances. Simple authoring: \n\u2022 \nIs limited to the most common types of fields: \n\u2022 \nText input (All Text fields are flagged as Required) \n\u2022 \nSignature \n\u2022 \nSigner's name (Printed) \n\u2022 \nSigner's email \n\u2022 \nSignature date (Read-Only; Supplied by the system) \n\u2022 \nCheckbox \n\u2022 \nPlaces fields anywhere you click on the document. \n\u2022 \nAllows resizing of fields by clicking the bottom right corner of the field (blue \ntriangle) and dragging the field to size. \n \n2. Advanced Authoring can be enabled by selecting the toggle in the upper right corner. \nAdvanced authoring: \n\u2022 \nAllows access to all field types (highlighted in yellow) \n\u2022 \nSupports form field detection (highlighted in green) \n\u2022 \nSupports Prefill fields (highlighted in pink) \n\u2022 \nSupports field assignment (highlighted in purple and pink) \n\u2022 \nSupports field validation \n",
+    "15": "\u2022 \nSupports calculated fields \n\u2022 \nSupports conditional fields \n\u2022 \nAllows control of the field text font/appearance \n\u2022 \nPlaces fields by dragging them from the menu on the right side of the document. \n\u2022 \nAllows resizing of fields by clicking the bottom right corner of the field (blue triangle) \nand dragging the field to size. \n \nNote:  You can switch between Simple and Advanced mode by selecting the Advanced \nediting (on||off) toggle in the upper-right corner. \n10. Select Next (in the top-right corner) after all the fields have been placed. \n11. Review and Send \nReview the agreement information and Send if everything is correct \n",
+    "16": " \n12. Confirmation \nA confirmation message is shown verifying the agreement has been sent successfully.   \nThere are three options to progress from the post-sending page: \n\u2022 \nManage agreements - Opens the Bulk Sends page with all your agreements: track \nstatus, access audit trails, send reminder \n\u2022 \nSend another document in bulk- Prepare another document to send to many people \n\u2022 \nClick Close to return to the Acrobat online Home page \n",
+    "17": " \nManage your bulk sends \nBulk sends can be managed from your Documents tab. \n1. Navigate to the Documents tab. \n2. Select Bulk Sends in the list of Your documents on the left side of the window. \n3. Single-click the Bulk Send you to want to access, opening the context menu on the \nright side of the window. The context menu on the right side contains five distinct \nsections: \n\u2022 \nMetadata (red square): At the top of the menu is the metadata for the Bulk Send \ntemplate: \n\u2022 \nImage of the Bulk Sends' first page \n\u2022 \nThe title of the Bulk Send \n\u2022 \nThe date the Bulk Send was sent to the participants \n\u2022 \nThe email value of the userID that created the Bulk Send \n\u2022 \nThe current status of the whole Bulk Send \n\u2022 \nThe Message provided in the initial email \n",
+    "18": "\u2022 \nAny CCd parties (listed by email value) \n \n\u2022 \nActions menu (blue square) - This section contains all of the actions you can take \nregarding the Bulk Send (parent template). Click the See More link at the bottom right \nof the section to see all values: \n\u2022 \nOpen Bulk Send - Opens the Bulk Send template document for viewing only. No fields \nare available \n\u2022 \nReminders \u2013 Add a reminder for yourself or everyone else who still needs to sign. \n\u2022 \nCancel: Cancel the Bulk Send. \n\u2022 \nDownload PDF - Downloads the whole (blank) PDF. \n",
+    "19": "\u2022 \nDownload Form Field Data - Downloads a CSV file of the field-level content for all \nchild agreements spawned from this parent Bulk Send that have been completed. \n\u2022 \nDownload Individual Files - Provides the option to download the individual PDF files \nif multiple files were used to create the web form. \n\u2022 \nHide/Unhide Bulk Send- Hide/Unhiding the Bulk Send simply removes (or adds) the \nBulk Send from your normal Manage page view. \n\u2022 \nShare - Shares the Bulk Send along with its status with the user email you provide. \nShared web forms can be viewed on the Manage page, but do not allow editing. \n\u2022 \nA PDF copy of the Bulk Send parent document (without added fields) is emailed to the \nsharee. \n\u2022 \nView Activity Report \n\u2022 \nView the current status of all child agreements created by the Bulk Send parent \ntemplate. \n\u2022 \nAdd Notes - Allows the user to make personal notes for the Bulk Send. \n\u2022 \nAgreements summary/filter (green square) - The Agreements section shows up to five \nvalues that reflect the number of child agreements in each status. If no child \nagreements are in a given status, the status is not exposed, so you may see fewer than \nfive line items. Clicking any one status will produce a filter list of those child \nagreements: \n\u2022 \nAll - Shows all (child) agreements that have spawned from the Bulk Send (parent \ntemplate). \n\u2022 \nIn Progress - Indicates that the child agreement is waiting for the participant to \ncomplete their signature. \n\u2022 \nCanceled - Indicates that either the sender explicitly canceled the child agreement, or \nthe participant declined to sign. \n\u2022 \nCompleted - Completed agreements have successfully obtained all signatures from all \nparticipants on the agreement. \n\u2022 \nWaiting for You - Indicates that the agreement is waiting for the sender to countersign \nthe agreement. \n\u2022 \nActivity for the Bulk Send parent template (orange square) - The Activity > link at the \nbottom of the context panel opens a chronological list of the enablement actions \ntaken against the (parent) Bulk Send template (eg: Creation, Completed events). \nAdobe Acrobat supports a range of solutions for electronic and digital signatures. These \nsolutions include certificate signatures that let you sign PDF files with a certificate-based \ndigital ID. Certificate signatures are also known as digital signatures. Acrobat lets you create \nyour certificate ID. However, the common approach is to work with a certificate ID from a \ntrusted third-party certificate authority. Additional signing options in Acrobat include \nintegration with Adobe Acrobat Sign. \n",
+    "20": " \n \nWhy use certificate signatures? \nMany business transactions, including financial, legal, and other regulated transactions, \nrequire high assurance when signing documents. When documents are distributed \nelectronically, it's important that recipients can: \n\u2022 \nVerify document authenticity\u2014confirming the identity of each person who signed the \ndocument \n\u2022 \nVerify document integrity\u2014confirming that the document has not been altered in \ntransit \nCertificate-based signatures provide both of these security services. Many businesses and \ngovernments have chosen to set up a certificate-based digital signature infrastructure within \ntheir organization. They use third-party certificate authorities to provide independent identity \nvalidation. Examples include: \nFor instance, companies in the European Union who need to comply with advanced or \nqualified electronic signature requirements in eIDAS e-signature regulation or the ETSI PAdES \nstandard (PDF Advanced Electronic Signatures). \n \nWhat can I do with certificate IDs? \nOnce certificate-based digital IDs have been provided to end users, they can \nuse Acrobat or Acrobat Reader software to sign PDF files and validate files they receive from \nothers. \nSign documents \n\u2022 \nSign PDF files using certificate IDs \n\u2022 \nPlace a signature box anywhere on the page \n\u2022 \nAdd multiple signatures to a page \n\u2022 \nAdd a time stamp to the document when working with a configured timestamp server \n\u2022 \nCertify a document with a visible or hidden signature so that recipients can verify \nauthenticity with or without seeing a visible signature on the page \n\u2022 \nAutomatically embed certificate data to support long-term validation \nValidate documents \n\u2022 \nValidate all signatures, confirming the identity of everyone who signed the document \n\u2022 \nValidate document integrity by tracking all previously signed versions of a document \nto verify changes made during the document\u2019s lifecycle \n",
     "21": "Set privileges and permissions for others \n\u2022 \nCertify a document while leaving portions of it available for form filling, signatures, or \ncomments \n\u2022 \nUse Acrobat Pro software to enable users of Reader 9 or later to sign with certificate \nIDs \n\u2022 \nUse Acrobat Standard or Pro to encrypt a PDF document with a certificate ID to restrict \nusage such as printing, editing, or copying \n \nWhat if my organization isn\u2019t prepared to set up certificate-\nbased signatures? \nConsider signing up for Adobe Acrobat Sign online, the leader in e-signatures and web \ncontracting. With Acrobat Sign, you can get PDF, Microsoft Word, and other documents sent, \nsigned, and filed instantly. And best of all, Adobe hosts it securely, so your IT department \ndoesn\u2019t have to do the work of setting up a signature infrastructure. \n \nResources \nAdobe Approved Trust List (AATL): The Adobe Approved Trust List is a program that allows \nmillions of users worldwide to create digital signatures that are trusted whenever the signed \ndocument is opened in Acrobat or Reader software. Check out the current members. \nAdobe Security and Privacy Portal: A good first stop for all things security and privacy at \nAdobe. \nCertified Document Services: Certified Document Services (CDS) was the predecessor to the \nAATL. \nContent Security Library: Extensive documentation on Adobe certificate signature \nadministration. \nManaging Digital IDs: Help pages for digital ID management. \nA certificate-based signature, like a conventional handwritten signature, identifies the person \nsigning a document. Unlike a handwritten signature, a certificate-based signature is difficult to \nforge because it contains encrypted information that is unique to the signer. It can be easily \nverified and informs recipients whether the document was modified after the signer initially \nsigned it. \nTo sign a document with a certificate-based signature, you must obtain a digital ID or create a \nself-signed digital ID in Acrobat or Acrobat Reader. The digital ID contains a private key and a \ncertificate with a public key, and more. The private key is used to create the certificate-based \n",
     "22": "signature. The certificate is a credential that is automatically applied to the signed document. \nThe signature is verified when recipients open the document. \nWhen you apply a certificate-based signature, Acrobat uses a hashing algorithm to generate a \nmessage digest, which it encrypts using your private key. Acrobat embeds the encrypted \nmessage digest in the PDF, certificate details, signature image, and a document version when \nsigned. \nCertificate-based signature in a PDF form \n \nSteps to add a certificate-based signature to a PDF \n1. Open a PDF in Acrobat and choose All Tools > more > Use a certificate in the \nglobal bar. \nAlternatively, from Acrobat Home, select See all tools. In the Protect section, \nselect Use a certificate, and then select a file you want to certify. \n2. The Use a certificate tool is open on the left pane. \n\u2022 \nSelect Certify (visible signatures) to certify with a visible digital signature, \nand then select Drag New Signature Rectangle in the dialog box that \nappears. \n\u2022 \nSelect Certify (invisible signatures) if you want to certify the document \nwithout a visible signature. \n \n3. Select OK in the Save as Certified Document dialog box. \n",
     "23": "4. If you've selected, Certify (visible signatures) in step 2, use the mouse to drag and draw \na rectangle area where you want your signature to appear. \n5. In the Sign with a Digital ID dialog box, choose the Digital ID you want to use for \ncertifying the document and select Continue, or select Configure New Digital ID to \ncreate a new ID. \n \n6. Select Review to review the document content before signing, then select Sign. Save \nthe PDF when prompted. Your document is now certified. \n \nCertifying and signing documents \nThe Use a certificate tool lets you apply two types of certificate-based signatures. You \ncan Certify a document, attest to its content or approve a document with the Digitally \nsign option. \nDigitally sign \nWhen you Digitally sign with a certificate, the signature is considered an approval signature. \nCertify (visible or invisible signatures) \n",

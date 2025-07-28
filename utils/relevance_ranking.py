@@ -133,7 +133,7 @@ def calculate_semantic_alignment(section_text: str, task_requirements: Dict, bi_
     """
     Calculate how well a section aligns with the task requirements using semantic similarity.
     """
-    if not section_text or not task_requirements.get('task_embedding') is not None:
+    if not section_text or task_requirements.get('task_embedding') is None:
         return 0.0
     
     try:
@@ -242,7 +242,7 @@ def extract_quality_features(section: Dict[str, Any]) -> Dict[str, float]:
 
 
 def rank_sections(sections: List[Dict], persona_role: str, job_task: str, 
-                 bi_encoder_model, cross_encoder_model, top_n: int = 5, batch_size: int = 32) -> List[Dict]:
+                  bi_encoder_model, cross_encoder_model, top_n: int = 5, batch_size: int = 32) -> List[Dict]:
     """
     Improved ranking system with better task understanding and quality assessment.
     """
@@ -283,10 +283,27 @@ def rank_sections(sections: List[Dict], persona_role: str, job_task: str,
     # Calculate comprehensive scores for valid sections
     scored_sections = []
     
+    # Pre-encode job_task and document names for efficiency
+    job_task_embedding = task_requirements['task_embedding']
+    
+    # Create a unique list of document names and encode them once
+    document_names = list(set([clean_text(s.get('document', '')) for s in valid_sections]))
+    doc_name_embeddings = {}
+    if document_names:
+        try:
+            with torch.no_grad():
+                doc_embeddings = bi_encoder_model.encode(document_names, convert_to_tensor=True, batch_size=batch_size)
+                for i, doc_name in enumerate(document_names):
+                    doc_name_embeddings[doc_name] = doc_embeddings[i]
+        except Exception as e:
+            print(f"Warning: Error encoding document names: {e}")
+
+
     for section in valid_sections:
         title = clean_text(section.get("section_title", ""))
         content = clean_text(section.get("content", ""))
         section_text = f"{title}. {content[:1000]}"
+        document_name = clean_text(section.get("document", ""))
         
         # Calculate semantic alignment score
         alignment_score = calculate_semantic_alignment(section_text, task_requirements, bi_encoder_model, batch_size)
@@ -301,9 +318,23 @@ def rank_sections(sections: List[Dict], persona_role: str, job_task: str,
             quality_features['has_structured_content'] * 0.3 +
             quality_features['position_score'] * 0.2
         )
-        
-        # Combined initial score
-        initial_score = alignment_score * 0.7 + quality_score * 0.3
+
+        # Calculate document name relevance score
+        doc_name_relevance = 0.0
+        if job_task_embedding is not None and document_name in doc_name_embeddings:
+            try:
+                doc_name_embedding = doc_name_embeddings[document_name]
+                doc_name_relevance = util.cos_sim(job_task_embedding, doc_name_embedding).item()
+            except Exception as e:
+                print(f"Warning: Error calculating document name similarity: {e}")
+
+        # Combined initial score with a small weight for document name relevance
+        # Adjusted weights to accommodate the new factor
+        initial_score = (
+            alignment_score * 0.7 +  # Reduced weight slightly for main alignment
+            quality_score * 0.25 +     # Keep quality score weight
+            doc_name_relevance * 0.05 # Small weight for document name relevance
+        )
         
         scored_sections.append((initial_score, section, section_text))
     
@@ -337,7 +368,7 @@ def rank_sections(sections: List[Dict], persona_role: str, job_task: str,
             ce_score = ce_scores[i]
             
             # Weighted combination: cross-encoder gets more weight for final ranking
-            final_score = initial_score * 0.3 + ce_score * 0.7
+            final_score = initial_score * 0.25 + ce_score * 0.75
             
             section_copy = section.copy()
             section_copy['relevance_score'] = final_score
@@ -387,7 +418,7 @@ def rank_sections(sections: List[Dict], persona_role: str, job_task: str,
 
 
 def extract_focused_snippet(text: str, query: str, bi_encoder_model, cross_encoder_model, 
-                          max_words: int = 60, context_sentences: int = 1, batch_size: int = 32) -> str:
+                            max_words: int = 60, context_sentences: int = 1, batch_size: int = 32) -> str:
     """
     Improved snippet extraction with better sentence boundary detection and context preservation.
     Fixed to avoid truncation artifacts and ensure clean text output.
@@ -551,8 +582,8 @@ def extract_focused_snippet(text: str, query: str, bi_encoder_model, cross_encod
 
 
 def extract_top_paragraphs(section_text: str, query: str, page_number: int, document: str,
-                          bi_encoder_model, cross_encoder_model, section_title: str = "", 
-                          top_k: int = 1, batch_size: int = 32) -> List[Dict]:
+                           bi_encoder_model, cross_encoder_model, section_title: str = "", 
+                           top_k: int = 1, batch_size: int = 32) -> List[Dict]:
     """
     Improved paragraph extraction with better content segmentation and cleaner output.
     """
@@ -572,7 +603,7 @@ def extract_top_paragraphs(section_text: str, query: str, page_number: int, docu
     if not paragraphs:
         # Fallback: treat entire content as one paragraph
         snippet = extract_focused_snippet(section_text, extraction_query, bi_encoder_model, 
-                                        cross_encoder_model, max_words=70, batch_size=batch_size)
+                                          cross_encoder_model, max_words=70, batch_size=batch_size)
         if snippet and len(snippet.split()) >= 5:
             return [{
                 "document": document,
@@ -595,7 +626,7 @@ def extract_top_paragraphs(section_text: str, query: str, page_number: int, docu
             
             # Extract focused snippet from the best paragraph
             snippet = extract_focused_snippet(best_paragraph, extraction_query, bi_encoder_model,
-                                           cross_encoder_model, max_words=75, batch_size=batch_size)
+                                               cross_encoder_model, max_words=75, batch_size=batch_size)
             
             if snippet and len(snippet.split()) >= 5:
                 return [{
@@ -609,7 +640,7 @@ def extract_top_paragraphs(section_text: str, query: str, page_number: int, docu
         # Fallback to first paragraph
         if paragraphs:
             snippet = extract_focused_snippet(paragraphs[0], extraction_query, bi_encoder_model,
-                                           cross_encoder_model, max_words=75, batch_size=batch_size)
+                                               cross_encoder_model, max_words=75, batch_size=batch_size)
             if snippet and len(snippet.split()) >= 5:
                 return [{
                     "document": document,
