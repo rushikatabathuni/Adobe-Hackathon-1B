@@ -54,9 +54,7 @@ project/
 
 2. **Install dependencies**
    ```bash
-   pip install torch sentence-transformers
-   pip install PyMuPDF  # for PDF processing
-   pip install numpy
+   pip install -r requirements.txt
    ```
 
 3. **Download required models**
