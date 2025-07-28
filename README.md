@@ -64,7 +64,7 @@ project/
    - `paraphrase_minilm_l12/` (Bi-encoder)
    - `cross-encoder-ms-marco-MiniLM-L-12-v2/` (Cross-encoder)
 
-## 📝 Input Configuration
+##  Input Configuration
 
 ### Directory Setup
 
@@ -105,11 +105,25 @@ Create an `input.json` file with the following structure:
 
 ##  Usage
 
-Run the main processing pipeline:
-
+Manually on PC:
 ```bash
 python main.py
 ```
+### Docker:
+# Build the Docker image
+`docker build -t adobe-pdf-analyzer .`
+
+# Prepare the following directory structure on your host machine:
+# input/
+# ├── input.json       # Your input configuration file
+# └── pdf/             # PDF files referenced in input.json
+#
+# output/
+# (empty folder for generated results)
+
+# Run the Docker container with volumes mounted for input and output
+`docker run -v "$(pwd)/input:/app/input" -v "$(pwd)/output:/app/output" adobe-pdf-analyzer`
+
 
 The system will:
 1. Load and validate the input configuration
