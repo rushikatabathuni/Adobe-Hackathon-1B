@@ -1,5 +1,3 @@
-# /app/utils/formatter.py
-
 def format_output(input_data, extracted_sections, refined_paragraphs, timestamp):
     """
     Builds the final output JSON structure.
