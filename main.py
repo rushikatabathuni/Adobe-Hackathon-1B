@@ -5,7 +5,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from sentence_transformers import SentenceTransformer, CrossEncoder
 from utils.pdf_utils import extract_outline_and_text
 from utils.section_extraction import extract_sections_from_outline
-from utils.relevance_ranking import rank_sections, extract_top_paragraphs # Assuming these are the updated ones
+from utils.relevance_ranking import rank_sections, extract_top_paragraphs
 from utils.formatter import format_output
 
 bi_encoder_model = SentenceTransformer("paraphrase_minilm_l12/")
