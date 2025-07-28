@@ -40,8 +40,7 @@ project/
 │   ├── relevance_ranking.py
 │   └── formatter.py
 ├── main.py
-├──README.md
-└── requirements.txt
+└──README.md
 ```
 
 ## 🔧 Setup & Installation
@@ -54,7 +53,7 @@ project/
 
 2. **Install dependencies**
    ```bash
-   pip install -r requirements.txt
+   pip install torch sentence-transformers PyMuPDF numpy 
    ```
 
 3. **Download required models**
@@ -103,10 +102,6 @@ Create an `input.json` file with the following structure:
 
 ##  Usage
 
-Manually on PC:
-```bash
-python main.py
-```
 ### Docker:
 # Build the Docker image
 `docker build -t adobe-pdf-analyzer .`
