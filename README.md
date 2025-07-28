@@ -11,7 +11,7 @@ A AI-powered system that extracts, ranks, and analyzes relevant content from PDF
 - **Quality Assessment**: Evaluates content quality based on multiple factors including length, structure, and position
 - **Concurrent Processing**: Multi-threaded PDF processing for improved performance
 
-## 🏗 Architecture
+##  Architecture
 
 The system consists of several key components:
 
