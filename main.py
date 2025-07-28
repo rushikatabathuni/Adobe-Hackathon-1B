@@ -11,8 +11,8 @@ from utils.formatter import format_output
 bi_encoder_model = SentenceTransformer("paraphrase_minilm_l12/")
 cross_encoder_model = CrossEncoder("cross-encoder-ms-marco-MiniLM-L-12-v2/")
 
-INPUT_DIR = "input"
-OUTPUT_DIR = "output"
+INPUT_DIR = "/app/input"
+OUTPUT_DIR = "/app/output"
 OUTPUT_FILE = os.path.join(OUTPUT_DIR, "output.json")
 
 def load_input_json():
